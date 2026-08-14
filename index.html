@@ -111,6 +111,16 @@
   .col-mid { color: var(--amber); }
   .col-high { color: var(--brand); }
 
+  /* 四维口诀 */
+  .motto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .motto-item { background: var(--bg); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .motto-k { font-size: 12px; font-weight: 700; color: var(--ink); }
+  .motto-v { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.6; }
+  .example { background: var(--amber-soft); border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 12px; }
+  .example-title { font-size: 12px; font-weight: 700; color: #92400e; }
+  .example-text { font-size: 12.5px; color: #92400e; margin-top: 4px; line-height: 1.7; }
+  .fund-tip { background: var(--green-soft); border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 10px; font-size: 12px; color: #166534; }
+
   .today-hero { background: linear-gradient(135deg, #c8161e 0%, #a50f16 100%); color: #fff; border-radius: var(--radius); padding: 22px 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; margin-bottom: 14px; }
   .today-hero::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.08); }
   .hero-date { font-size: 12px; opacity: .85; letter-spacing: 1px; }
@@ -175,6 +185,7 @@
     .main-area { margin-left: 54px; }
     .market-grid { grid-template-columns: repeat(2, 1fr); }
     .grid { grid-template-columns: 1fr; }
+    .motto-grid { grid-template-columns: 1fr; }
     .action-cols { grid-template-columns: 1fr; }
     .action-col + .action-col { border-left: none; border-top: 1px solid var(--line); }
   }
@@ -237,6 +248,24 @@
           <div class="sec-meta">分位·位置·ROE·股息 四维看</div>
         </div>
         <div class="val-grid" id="valuation-panel"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--amber-soft)">🧭</span>四维判断口诀</div>
+          <div class="sec-meta">对照着看，不单看分位</div>
+        </div>
+        <div class="motto-grid">
+          <div class="motto-item"><div class="motto-k">① 分位 · 贵不贵</div><div class="motto-v">低于 30% 便宜区，高于 70% 要警惕</div></div>
+          <div class="motto-item"><div class="motto-k">② 位置 · 趋势</div><div class="motto-v">52 周位置越低，越接近一年底部</div></div>
+          <div class="motto-item"><div class="motto-k">③ ROE · 赚不赚</div><div class="motto-v">越高越好，宽基 10% 以上算优秀</div></div>
+          <div class="motto-item"><div class="motto-k">④ 股息 · 分红</div><div class="motto-v">越高越抗跌，防守型加分项</div></div>
+        </div>
+        <div class="example">
+          <div class="example-title">💡 举例</div>
+          <div class="example-text">上证50 分位 78% 看着偏贵，但 52 周位置只有 34%（近一年低位）、ROE 10.8%、股息 3.17%，比科创50（分位 97%、ROE 仅 4.3%、股息 0.24%）踏实得多——这就是多维一起看的意义，单看分位看不出差别。</div>
+        </div>
+        <div class="fund-tip">💰 资金提醒：只用 3 年不用的闲钱，分批定投，别一次梭哈。</div>
       </section>
 
       <section id="section-today">
