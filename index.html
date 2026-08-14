@@ -105,6 +105,8 @@
   .val-card .name { font-size: 12px; color: var(--ink-2); }
   .val-card .pct { font-size: 20px; font-weight: 700; margin-top: 2px; }
   .val-card .sub { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+  .val-card .pos { font-size: 11px; color: var(--ink-2); margin-top: 3px; }
+  .pct-label { font-size: 11px; font-weight: 400; color: var(--ink-3); margin-left: 3px; }
   .col-low { color: var(--green); }
   .col-mid { color: var(--amber); }
   .col-high { color: var(--brand); }
@@ -231,8 +233,8 @@
 
       <section id="section-valuation" class="section">
         <div class="sec-head">
-          <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值分位</div>
-          <div class="sec-meta">越低越便宜</div>
+          <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值体检</div>
+          <div class="sec-meta">分位·位置·ROE·股息 四维看</div>
         </div>
         <div class="val-grid" id="valuation-panel"></div>
       </section>
@@ -352,10 +354,12 @@
   function cls(pct) { if (pct < 30) return "col-low"; if (pct > 70) return "col-high"; return "col-mid"; }
   var html = "";
   V.items.forEach(function (it) {
+    var posTxt = (it.pos52 != null) ? ('52周位置 ' + it.pos52 + '%') : '位置数据暂无';
     html += '<div class="val-card">'
       + '<div class="name">' + it.name + '</div>'
-      + '<div class="pct ' + cls(it.pePct) + '">' + it.pePct + '%</div>'
-      + '<div class="sub">PE ' + it.pe + ' · PB分位 ' + it.pbPct + '%</div>'
+      + '<div class="pct ' + cls(it.pePct) + '">' + it.pePct + '%<span class="pct-label">分位</span></div>'
+      + '<div class="pos">📈 ' + posTxt + '</div>'
+      + '<div class="sub">ROE ' + it.roe + '% · 股息 ' + it.yield + '%</div>'
       + '</div>';
   });
   box.innerHTML = html;
