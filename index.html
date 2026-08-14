@@ -66,6 +66,19 @@
   .up { color: #c8161e; }
   .down { color: #16a34a; }
 
+  /* 指数估值分位 */
+  .valuation { margin-top: 14px; }
+  .valuation-head { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .valuation-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .val-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .val-item { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; box-shadow: var(--shadow); }
+  .val-name { font-size: 12px; color: var(--ink-2); }
+  .val-pct { font-size: 22px; font-weight: 700; margin-top: 3px; }
+  .val-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .val-low { color: #16a34a; }
+  .val-mid { color: #d97706; }
+  .val-high { color: #c8161e; }
+
   /* 今日头图卡 */
   .today-hero {
     background: linear-gradient(135deg, #c8161e 0%, #a50f16 100%);
@@ -193,6 +206,8 @@
 
   <div class="market-panel" id="market-panel"></div>
 
+  <div class="valuation" id="valuation-panel"></div>
+
   <div class="disclaimer">
     <b>⚠️ 风险提示</b>
     <span id="disclaimer-text"></span>
@@ -211,6 +226,7 @@
 </div>
 
 <script src="content.js"></script>
+<script src="valuation.js"></script>
 <script>
 (function () {
   var C = window.CONTENT;
@@ -344,6 +360,28 @@
   }
   load();
   setInterval(load, 30000);
+})();
+</script>
+<script>
+(function () {
+  var V = window.VALUATION;
+  var box = document.getElementById("valuation-panel");
+  if (!V || !V.items || !V.items.length || !box) return;
+  function cls(pct) {
+    if (pct < 30) return "val-low";
+    if (pct > 70) return "val-high";
+    return "val-mid";
+  }
+  var html = '<div class="valuation-head">📊 指数估值分位 · 越低越便宜</div><div class="val-grid">';
+  V.items.forEach(function (it) {
+    html += '<div class="val-item">'
+      + '<div class="val-name">' + it.name + '</div>'
+      + '<div class="val-pct ' + cls(it.pePct) + '">' + it.pePct + '%</div>'
+      + '<div class="val-sub">PE ' + it.pe + ' · PB分位 ' + it.pbPct + '%</div>'
+      + '</div>';
+  });
+  html += '</div>';
+  box.innerHTML = html;
 })();
 </script>
 </body>
