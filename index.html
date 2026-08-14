@@ -6,192 +6,143 @@
 <title>凉丸瓶工作台 · 平民股票基金每日一学</title>
 <style>
   :root {
-    --bg: #f4f6f9;
+    --bg: #f5f6fa;
     --card: #ffffff;
     --ink: #1f2937;
     --ink-2: #6b7280;
     --ink-3: #9ca3af;
-    --line: #e8ebf0;
-    --brand: #c8161e;       /* 中国红，涨 */
-    --brand-soft: #fdf0f0;
-    --blue: #2563eb;        /* 知识 */
+    --line: #ebeef3;
+    --brand: #c8161e;
+    --brand-soft: #feecee;
+    --blue: #2b6cf6;
     --blue-soft: #eef3ff;
-    --green: #16a34a;       /* 稳健 */
+    --green: #18a957;
     --green-soft: #ecf9f0;
-    --amber: #d97706;       /* 提示 */
+    --amber: #d97706;
     --amber-soft: #fef6e7;
-    --radius: 14px;
-    --shadow: 0 1px 3px rgba(17,24,39,.06), 0 6px 18px rgba(17,24,39,.05);
+    --purple: #7c5cf3;
+    --purple-soft: #f3f0ff;
+    --pink: #e34f7d;
+    --pink-soft: #fdf0f4;
+    --radius: 18px;
+    --radius-sm: 12px;
+    --shadow: 0 2px 6px rgba(20,30,60,.04), 0 8px 24px rgba(20,30,60,.04);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-      "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: var(--bg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(180deg, #f5f6fa 0%, #eef0f6 240px, #eef0f6 100%);
     color: var(--ink);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 28px 20px 64px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 80px; }
 
-  /* 头部 */
-  header { text-align: center; margin-bottom: 20px; }
-  .logo {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-size: 26px; font-weight: 700; letter-spacing: 1px;
-  }
-  .logo .dot { color: var(--brand); }
-  .subtitle { color: var(--ink-2); font-size: 14px; margin-top: 6px; }
+  /* 顶部 */
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 2px 4px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 21px; font-weight: 700; letter-spacing: .5px; }
+  .logo .dot { color: var(--brand); font-size: 22px; }
+  .header-date { font-size: 12px; color: var(--ink-2); }
+  .header-date b { color: var(--brand); }
 
-  /* 免责声明 */
-  .disclaimer {
-    background: var(--amber-soft); color: #92400e;
-    border: 1px solid #f3d9a8; border-radius: 10px;
-    padding: 10px 14px; font-size: 12.5px; margin: 18px 0 22px;
-    display: flex; gap: 8px; align-items: flex-start;
-  }
+  .greeting { background: var(--card); border-radius: var(--radius); padding: 14px 18px; box-shadow: var(--shadow); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+  .greeting-text { font-size: 14px; color: var(--ink-2); }
+  .greeting-text b { color: var(--ink); }
+  .greeting-pill { background: var(--brand-soft); color: var(--brand); font-size: 12px; padding: 5px 12px; border-radius: 999px; font-weight: 600; }
+
+  .nav-pills { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 8px; margin-bottom: 6px; scrollbar-width: none; }
+  .nav-pills::-webkit-scrollbar { display: none; }
+  .pill { flex: 0 0 auto; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--card); color: var(--ink-2); text-decoration: none; box-shadow: var(--shadow); display: flex; align-items: center; gap: 6px; }
+  .pill.active { background: var(--ink); color: #fff; }
+
+  .disclaimer { background: var(--amber-soft); color: #92400e; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin: 10px 0 14px; display: flex; gap: 8px; align-items: flex-start; }
   .disclaimer b { white-space: nowrap; }
 
-  /* 行情面板 */
-  .market-panel { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
-  .market-item {
-    flex: 1; min-width: 148px; background: var(--card);
-    border: 1px solid var(--line); border-radius: 10px;
-    padding: 10px 14px; box-shadow: var(--shadow);
-  }
-  .market-name { font-size: 12px; color: var(--ink-2); }
-  .market-price { font-size: 19px; font-weight: 700; margin-top: 3px; }
-  .market-chg { font-size: 12.5px; margin-top: 2px; }
-  .market-note { font-size: 11px; color: var(--ink-3); margin-top: 8px; text-align: right; }
-  .up { color: #c8161e; }
-  .down { color: #16a34a; }
+  /* 模块卡片 */
+  .section { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; margin-bottom: 14px; }
+  .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .sec-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .sec-title .ico { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .sec-meta { font-size: 11px; color: var(--ink-3); }
 
-  /* 指数估值分位 */
-  .valuation { margin-top: 14px; }
-  .valuation-head { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-  .valuation-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-  .val-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-  .val-item { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; box-shadow: var(--shadow); }
-  .val-name { font-size: 12px; color: var(--ink-2); }
-  .val-pct { font-size: 22px; font-weight: 700; margin-top: 3px; }
-  .val-sub { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
-  .val-low { color: #16a34a; }
-  .val-mid { color: #d97706; }
-  .val-high { color: #c8161e; }
+  /* 行情 */
+  .market-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .market-card { background: var(--blue-soft); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; }
+  .market-card .name { font-size: 11px; color: var(--ink-2); }
+  .market-card .price { font-size: 17px; font-weight: 700; margin-top: 3px; }
+  .market-card .chg { font-size: 11px; margin-top: 2px; }
+  .market-card .up { color: var(--brand); }
+  .market-card .down { color: var(--green); }
 
-  /* 今日头图卡 */
-  .today-hero {
-    background: linear-gradient(135deg, #c8161e 0%, #a50f16 100%);
-    color: #fff; border-radius: var(--radius); padding: 26px 28px;
-    box-shadow: var(--shadow); position: relative; overflow: hidden;
-  }
-  .today-hero::after {
-    content: ""; position: absolute; right: -40px; top: -40px;
-    width: 180px; height: 180px; border-radius: 50%;
-    background: rgba(255,255,255,.08);
-  }
-  .hero-date { font-size: 13px; opacity: .85; letter-spacing: 1px; }
-  .hero-theme { font-size: 22px; font-weight: 700; margin-top: 8px; }
-  .hero-line {
-    margin-top: 12px; font-size: 15px; opacity: .95;
-    border-left: 3px solid rgba(255,255,255,.6); padding-left: 12px;
-  }
+  /* 估值 */
+  .val-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .val-card { background: var(--purple-soft); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .val-card .name { font-size: 12px; color: var(--ink-2); }
+  .val-card .pct { font-size: 20px; font-weight: 700; margin-top: 2px; }
+  .val-card .sub { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
+  .col-low { color: var(--green); }
+  .col-mid { color: var(--amber); }
+  .col-high { color: var(--brand); }
 
-  /* 今日操作机会板块 */
-  .action-panel {
-    margin-top: 20px; border-radius: var(--radius);
-    border: 1px solid var(--line); box-shadow: var(--shadow);
-    background: var(--card); overflow: hidden;
-  }
-  .action-head {
-    display: flex; align-items: center; gap: 14px;
-    padding: 18px 22px; color: #fff;
-  }
-  .signal-dot {
-    flex: 0 0 52px; height: 52px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; background: rgba(255,255,255,.22);
-  }
-  .action-label { font-size: 12px; opacity: .9; letter-spacing: 1px; }
-  .action-signal-text { font-size: 20px; font-weight: 700; margin-top: 2px; }
-  .action-note { font-size: 11px; opacity: .75; margin-top: 3px; }
-  .action-conclusion {
-    padding: 16px 22px; font-size: 15px; font-weight: 600;
-    border-top: 1px solid var(--line); background: #fafbfc;
-  }
+  /* 今日头图 */
+  .today-hero { background: linear-gradient(135deg, #c8161e 0%, #a50f16 100%); color: #fff; border-radius: var(--radius); padding: 22px 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; margin-bottom: 14px; }
+  .today-hero::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.08); }
+  .hero-date { font-size: 12px; opacity: .85; letter-spacing: 1px; }
+  .hero-theme { font-size: 19px; font-weight: 700; margin-top: 6px; }
+  .hero-line { margin-top: 10px; font-size: 14px; opacity: .95; border-left: 3px solid rgba(255,255,255,.6); padding-left: 10px; }
+
+  /* 信号灯 */
+  .action-panel { border-radius: var(--radius); border: 1px solid var(--line); background: var(--card); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; }
+  .action-head { padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 12px; }
+  .signal-dot { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  .action-label { font-size: 11px; opacity: .9; letter-spacing: 1px; }
+  .action-signal-text { font-size: 18px; font-weight: 700; margin-top: 1px; }
+  .action-note { font-size: 11px; opacity: .75; margin-top: 2px; }
+  .action-conclusion { padding: 14px 18px; font-size: 14px; font-weight: 600; background: #fafbfc; border-top: 1px solid var(--line); }
   .action-cols { display: grid; grid-template-columns: 1fr 1fr; }
-  .action-col { padding: 16px 22px; }
+  .action-col { padding: 14px 18px; }
   .action-col + .action-col { border-left: 1px solid var(--line); }
-  .col-title { font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 10px; }
+  .col-title { font-size: 12px; font-weight: 700; color: var(--ink-2); margin-bottom: 8px; }
   .action-col ul { list-style: none; }
-  .action-col li {
-    font-size: 13.5px; color: #374151; padding: 4px 0 4px 20px; position: relative;
-    line-height: 1.55;
-  }
-  .action-col li::before {
-    content: "·"; position: absolute; left: 6px; font-weight: 700; color: var(--ink-3);
-  }
-  .action-col.checklist li { padding-left: 22px; }
-  .action-col.checklist li::before {
-    content: "✓"; left: 0; color: var(--green); font-weight: 700;
-  }
+  .action-col li { font-size: 13px; color: #374151; padding: 3px 0 3px 18px; position: relative; line-height: 1.55; }
+  .action-col li::before { content: "·"; position: absolute; left: 6px; font-weight: 700; color: var(--ink-3); }
+  .action-col.checklist li { padding-left: 20px; }
+  .action-col.checklist li::before { content: "✓"; left: 0; color: var(--green); font-weight: 700; }
 
-  /* 卡片网格 */
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
-  .card {
-    background: var(--card); border-radius: var(--radius);
-    border: 1px solid var(--line); box-shadow: var(--shadow);
-    padding: 18px 18px 16px; cursor: pointer; transition: .18s;
-  }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(17,24,39,.09); }
-  .card-head { display: flex; align-items: flex-start; gap: 12px; }
-  .card-icon {
-    flex: 0 0 40px; height: 40px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-  }
-  .card-title { font-size: 16px; font-weight: 700; }
-  .card-summary { font-size: 13px; color: var(--ink-2); margin-top: 3px; }
-  .tag {
-    display: inline-block; font-size: 11px; padding: 2px 8px;
-    border-radius: 999px; margin-bottom: 6px; font-weight: 600;
-  }
-  .tag.knowledge { background: var(--blue-soft); color: var(--blue); }
-  .tag.watch { background: var(--brand-soft); color: var(--brand); }
-  .tag.fund { background: var(--green-soft); color: var(--green); }
-  .icon.knowledge { background: var(--blue-soft); }
-  .icon.watch { background: var(--brand-soft); }
-  .icon.fund { background: var(--green-soft); }
+  /* 三类卡片 */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .c-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; cursor: pointer; transition: .18s; }
+  .c-card:hover { transform: translateY(-2px); }
+  .c-card-head { display: flex; align-items: flex-start; gap: 10px; }
+  .c-card-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex: 0 0 36px; }
+  .c-card-icon.knowledge { background: var(--blue-soft); }
+  .c-card-icon.watch { background: var(--brand-soft); }
+  .c-card-icon.fund { background: var(--green-soft); }
+  .c-card-title { font-size: 15px; font-weight: 700; }
+  .c-card-summary { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+  .c-card-detail { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 13.5px; color: #374151; white-space: pre-line; line-height: 1.8; }
+  .c-card.open .c-card-detail { display: block; }
+  .c-card .hint { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
+  .c-card.open .hint { display: none; }
 
-  .card-detail {
-    display: none; margin-top: 14px; padding-top: 14px;
-    border-top: 1px dashed var(--line); font-size: 14px;
-    color: #374151; white-space: pre-line; line-height: 1.8;
-  }
-  .card.open .card-detail { display: block; }
-  .card .hint { font-size: 11px; color: var(--ink-3); margin-top: 10px; }
-  .card.open .hint { display: none; }
+  /* 历史 */
+  .history-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+  .history-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .timeline-item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-item .t-date { font-size: 11px; color: var(--ink-3); }
+  .timeline-item .t-theme { font-size: 14px; font-weight: 600; margin-top: 2px; }
+  .timeline-item .t-line { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
 
-  /* 历史时间轴 */
-  .history { margin-top: 30px; }
-  .history-title {
-    font-size: 16px; font-weight: 700; margin-bottom: 14px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .history-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-  .timeline-item {
-    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-    padding: 14px 18px; margin-bottom: 10px; box-shadow: var(--shadow);
-  }
-  .timeline-item .t-date { font-size: 12px; color: var(--ink-3); }
-  .timeline-item .t-theme { font-size: 15px; font-weight: 600; margin-top: 2px; }
-  .timeline-item .t-line { font-size: 13px; color: var(--ink-2); margin-top: 3px; }
+  footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
 
-  footer { text-align: center; color: var(--ink-3); font-size: 12px; margin-top: 36px; }
+  /* 浮动按钮 */
+  .fab { position: fixed; right: 20px; bottom: 24px; width: 48px; height: 48px; border-radius: 50%; background: var(--brand); color: #fff; box-shadow: 0 4px 14px rgba(200,22,30,.4); border: none; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 50; }
+  .fab:active { transform: scale(.95); }
 
   @media (max-width: 640px) {
+    .market-grid { grid-template-columns: repeat(2, 1fr); }
     .grid { grid-template-columns: 1fr; }
-    .hero-theme { font-size: 19px; }
     .action-cols { grid-template-columns: 1fr; }
     .action-col + .action-col { border-left: none; border-top: 1px solid var(--line); }
   }
@@ -201,29 +152,58 @@
 <div class="wrap">
   <header>
     <div class="logo"><span class="dot">●</span>凉丸瓶工作台</div>
-    <div class="subtitle">平民股票基金知识 · 每日一学 · 先结论后讲解</div>
+    <div class="header-date" id="header-date"></div>
   </header>
 
-  <div class="market-panel" id="market-panel"></div>
-
-  <div class="valuation" id="valuation-panel"></div>
-
-  <div class="disclaimer">
-    <b>⚠️ 风险提示</b>
-    <span id="disclaimer-text"></span>
+  <div class="greeting">
+    <div class="greeting-text">每日学一点，<b>慢慢变成高手</b></div>
+    <div class="greeting-pill" id="greeting-pill">黄灯</div>
   </div>
 
-  <div id="today-hero"></div>
-  <div id="today-action"></div>
-  <div class="grid" id="today-cards"></div>
+  <nav class="nav-pills">
+    <a class="pill active" href="#section-today">📌 今日</a>
+    <a class="pill" href="#section-market">📊 行情</a>
+    <a class="pill" href="#section-valuation">🌡 估值</a>
+    <a class="pill" href="#section-history">📅 回顾</a>
+  </nav>
 
-  <div class="history" id="history-wrap" style="display:none;">
+  <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
+
+  <!-- 行情 -->
+  <section id="section-market" class="section">
+    <div class="sec-head">
+      <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">📊</span>实时行情</div>
+      <div class="sec-meta">每 30 秒刷新</div>
+    </div>
+    <div class="market-grid" id="market-panel"></div>
+  </section>
+
+  <!-- 估值 -->
+  <section id="section-valuation" class="section">
+    <div class="sec-head">
+      <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值分位</div>
+      <div class="sec-meta">越低越便宜</div>
+    </div>
+    <div class="val-grid" id="valuation-panel"></div>
+  </section>
+
+  <!-- 今日 -->
+  <section id="section-today">
+    <div id="today-hero"></div>
+    <div id="today-action"></div>
+    <div class="grid" id="today-cards"></div>
+  </section>
+
+  <!-- 历史 -->
+  <section id="section-history" class="history-card" style="display:none;">
     <div class="history-title">📅 往期回顾</div>
     <div id="history-list"></div>
-  </div>
+  </section>
 
   <footer id="footer"></footer>
 </div>
+
+<button class="fab" id="fab" title="回到顶部">↑</button>
 
 <script src="content.js"></script>
 <script src="valuation.js"></script>
@@ -231,104 +211,99 @@
 (function () {
   var C = window.CONTENT;
   if (!C || !C.daily || !C.daily.length) return;
-
   var emoji = { knowledge: "📚", watch: "📈", fund: "🧺" };
-  var tagName = { knowledge: "知识", watch: "看盘", fund: "稳健品类" };
-
   document.getElementById("disclaimer-text").textContent = C.disclaimer;
-  document.getElementById("footer").textContent =
-    "凉丸瓶工作台 · 内容仅供学习参考 · 最后更新 " + C.lastUpdated;
+  document.getElementById("footer").textContent = "凉丸瓶工作台 · 内容仅供学习参考 · 最后更新 " + C.lastUpdated;
+  document.getElementById("header-date").innerHTML = "更新 <b>" + C.lastUpdated + "</b>";
 
   var today = C.daily[0];
+  document.getElementById("today-hero").innerHTML =
+    '<div class="today-hero">'
+    + '<div class="hero-date">' + today.date + " · " + today.week + '</div>'
+    + '<div class="hero-theme">' + today.theme + '</div>'
+    + '<div class="hero-line">' + today.oneLiner + '</div>'
+    + '</div>';
 
-  // 头图卡
-  var hero = document.getElementById("today-hero");
-  hero.innerHTML =
-    '<div class="today-hero">' +
-      '<div class="hero-date">' + today.date + " · " + today.week + '</div>' +
-      '<div class="hero-theme">' + today.theme + '</div>' +
-      '<div class="hero-line">' + today.oneLiner + '</div>' +
-    '</div>';
-
-  // 今日操作机会板块
   var actionBox = document.getElementById("today-action");
   if (today.action) {
     var a = today.action;
     var signalMap = {
-      green:  { color: "#16a34a", emoji: "🟢", note: "机会明确 · 可按纪律操作" },
+      green: { color: "#18a957", emoji: "🟢", note: "机会明确 · 可按纪律操作" },
       yellow: { color: "#d97706", emoji: "🟡", note: "方向不明 · 等待更明确信号" },
-      red:    { color: "#c8161e", emoji: "🔴", note: "风险较大 · 观望学习为主" }
+      red: { color: "#c8161e", emoji: "🔴", note: "风险较大 · 观望学习为主" }
     };
     var s = signalMap[a.signal] || signalMap.yellow;
     var reasonHtml = (a.reasons || []).map(function (r) { return "<li>" + r + "</li>"; }).join("");
     var checkHtml = (a.checklist || []).map(function (c) { return "<li>" + c + "</li>"; }).join("");
     actionBox.innerHTML =
-      '<div class="action-panel">' +
-        '<div class="action-head" style="background:' + s.color + '">' +
-          '<div class="signal-dot">' + s.emoji + '</div>' +
-          '<div>' +
-            '<div class="action-label">今日是否有操作机会</div>' +
-            '<div class="action-signal-text">' + a.signalText + '</div>' +
-            '<div class="action-note">' + s.note + '（信号灯＝操作机会，不是涨跌）</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="action-conclusion">💡 结论：' + a.conclusion + '</div>' +
-        '<div class="action-cols">' +
-          '<div class="action-col">' +
-            '<div class="col-title">为什么这么判断</div>' +
-            '<ul>' + reasonHtml + '</ul>' +
-          '</div>' +
-          '<div class="action-col checklist">' +
-            '<div class="col-title">小白今日行动清单</div>' +
-            '<ul>' + checkHtml + '</ul>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
+      '<div class="action-panel">'
+      + '<div class="action-head" style="background:' + s.color + '">'
+      + '<div class="signal-dot">' + s.emoji + '</div>'
+      + '<div>'
+      + '<div class="action-label">今日是否有操作机会</div>'
+      + '<div class="action-signal-text">' + a.signalText + '</div>'
+      + '<div class="action-note">' + s.note + '</div>'
+      + '</div></div>'
+      + '<div class="action-conclusion">💡 ' + a.conclusion + '</div>'
+      + '<div class="action-cols">'
+      + '<div class="action-col"><div class="col-title">为什么这么判断</div><ul>' + reasonHtml + '</ul></div>'
+      + '<div class="action-col checklist"><div class="col-title">今日行动清单</div><ul>' + checkHtml + '</ul></div>'
+      + '</div></div>';
+    var pillMap = { green: "今日 绿灯", yellow: "今日 黄灯", red: "今日 红灯" };
+    document.getElementById("greeting-pill").textContent = pillMap[a.signal] || "今日 黄灯";
   }
 
-  // 今日卡片
   var grid = document.getElementById("today-cards");
   today.cards.forEach(function (c) {
     var div = document.createElement("div");
-    div.className = "card";
+    div.className = "c-card";
     div.innerHTML =
-      '<div class="card-head">' +
-        '<div class="card-icon icon ' + c.tag + '">' + (emoji[c.tag] || "📌") + '</div>' +
-        '<div>' +
-          '<span class="tag ' + c.tag + '">' + (tagName[c.tag] || "") + '</span>' +
-          '<div class="card-title">' + c.title + '</div>' +
-          '<div class="card-summary">' + c.summary + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="card-detail">' + c.detail + '</div>' +
-      '<div class="hint">点击展开详情 ↓</div>';
-    div.addEventListener("click", function () {
-      div.classList.toggle("open");
-    });
+      '<div class="c-card-head">'
+      + '<div class="c-card-icon ' + c.tag + '">' + (emoji[c.tag] || "📌") + '</div>'
+      + '<div>'
+      + '<div class="c-card-title">' + c.title + '</div>'
+      + '<div class="c-card-summary">' + c.summary + '</div>'
+      + '</div></div>'
+      + '<div class="c-card-detail">' + c.detail + '</div>'
+      + '<div class="hint">点击展开详情 ↓</div>';
+    div.addEventListener("click", function () { div.classList.toggle("open"); });
     grid.appendChild(div);
   });
 
-  // 历史时间轴
   if (C.daily.length > 1) {
-    var wrap = document.getElementById("history-wrap");
+    var wrap = document.getElementById("section-history");
     var list = document.getElementById("history-list");
     wrap.style.display = "block";
     for (var i = 1; i < C.daily.length; i++) {
       var d = C.daily[i];
       var item = document.createElement("div");
       item.className = "timeline-item";
-      item.innerHTML =
-        '<div class="t-date">' + d.date + " · " + d.week + '</div>' +
-        '<div class="t-theme">' + d.theme + '</div>' +
-        '<div class="t-line">' + d.oneLiner + '</div>';
+      item.innerHTML = '<div class="t-date">' + d.date + " · " + d.week + '</div>'
+        + '<div class="t-theme">' + d.theme + '</div>'
+        + '<div class="t-line">' + d.oneLiner + '</div>';
       list.appendChild(item);
     }
   }
 })();
-</script>
-<script>
+
 (function () {
-  var map = { sh000001: "上证指数", sz399001: "深证成指", sz399006: "创业板指", sz399300: "沪深300" };
+  var V = window.VALUATION;
+  var box = document.getElementById("valuation-panel");
+  if (!V || !V.items || !V.items.length || !box) return;
+  function cls(pct) { if (pct < 30) return "col-low"; if (pct > 70) return "col-high"; return "col-mid"; }
+  var html = "";
+  V.items.forEach(function (it) {
+    html += '<div class="val-card">'
+      + '<div class="name">' + it.name + '</div>'
+      + '<div class="pct ' + cls(it.pePct) + '">' + it.pePct + '%</div>'
+      + '<div class="sub">PE ' + it.pe + ' · PB分位 ' + it.pbPct + '%</div>'
+      + '</div>';
+  });
+  box.innerHTML = html;
+})();
+
+(function () {
+  var map = { sh000001: "上证", sz399001: "深证", sz399006: "创业板", sz399300: "沪深300" };
   var codes = "sh000001,sz399001,sz399006,sz399300";
   var box = document.getElementById("market-panel");
   if (!box) return;
@@ -342,47 +317,24 @@
       var price = a[3], chg = a[31], pct = a[32];
       var up = parseFloat(chg) >= 0;
       var cls = up ? "up" : "down";
-      out += '<div class="market-item">'
-        + '<div class="market-name">' + name + '</div>'
-        + '<div class="market-price ' + cls + '">' + price + '</div>'
-        + '<div class="market-chg ' + cls + '">' + (up ? "+" : "") + chg + '　' + (up ? "+" : "") + pct + '%</div>'
+      out += '<div class="market-card">'
+        + '<div class="name">' + name + '</div>'
+        + '<div class="price ' + cls + '">' + price + '</div>'
+        + '<div class="chg ' + cls + '">' + (up ? "+" : "") + chg + ' ' + (up ? "+" : "") + pct + '%</div>'
         + '</div>';
     });
-    if (!out) return;
-    out += '<div class="market-note">行情来自公开数据 · 可能有延迟 · 仅供参考</div>';
-    box.innerHTML = out;
+    if (out) box.innerHTML = out;
   }
   function load() {
-    fetch("https://qt.gtimg.cn/q=" + codes)
-      .then(function (r) { return r.text(); })
-      .then(render)
-      .catch(function () {});
+    fetch("https://qt.gtimg.cn/q=" + codes).then(function (r) { return r.text(); }).then(render).catch(function(){});
   }
   load();
   setInterval(load, 30000);
 })();
-</script>
-<script>
-(function () {
-  var V = window.VALUATION;
-  var box = document.getElementById("valuation-panel");
-  if (!V || !V.items || !V.items.length || !box) return;
-  function cls(pct) {
-    if (pct < 30) return "val-low";
-    if (pct > 70) return "val-high";
-    return "val-mid";
-  }
-  var html = '<div class="valuation-head">📊 指数估值分位 · 越低越便宜</div><div class="val-grid">';
-  V.items.forEach(function (it) {
-    html += '<div class="val-item">'
-      + '<div class="val-name">' + it.name + '</div>'
-      + '<div class="val-pct ' + cls(it.pePct) + '">' + it.pePct + '%</div>'
-      + '<div class="val-sub">PE ' + it.pe + ' · PB分位 ' + it.pbPct + '%</div>'
-      + '</div>';
-  });
-  html += '</div>';
-  box.innerHTML = html;
-})();
+
+document.getElementById("fab").addEventListener("click", function () {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 </script>
 </body>
 </html>
