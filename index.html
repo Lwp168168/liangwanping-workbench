@@ -52,6 +52,20 @@
   }
   .disclaimer b { white-space: nowrap; }
 
+  /* 行情面板 */
+  .market-panel { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+  .market-item {
+    flex: 1; min-width: 148px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; box-shadow: var(--shadow);
+  }
+  .market-name { font-size: 12px; color: var(--ink-2); }
+  .market-price { font-size: 19px; font-weight: 700; margin-top: 3px; }
+  .market-chg { font-size: 12.5px; margin-top: 2px; }
+  .market-note { font-size: 11px; color: var(--ink-3); margin-top: 8px; text-align: right; }
+  .up { color: #c8161e; }
+  .down { color: #16a34a; }
+
   /* 今日头图卡 */
   .today-hero {
     background: linear-gradient(135deg, #c8161e 0%, #a50f16 100%);
@@ -177,6 +191,8 @@
     <div class="subtitle">平民股票基金知识 · 每日一学 · 先结论后讲解</div>
   </header>
 
+  <div class="market-panel" id="market-panel"></div>
+
   <div class="disclaimer">
     <b>⚠️ 风险提示</b>
     <span id="disclaimer-text"></span>
@@ -292,6 +308,42 @@
       list.appendChild(item);
     }
   }
+})();
+</script>
+<script>
+(function () {
+  var map = { sh000001: "上证指数", sz399001: "深证成指", sz399006: "创业板指", sz399300: "沪深300" };
+  var codes = "sh000001,sz399001,sz399006,sz399300";
+  var box = document.getElementById("market-panel");
+  if (!box) return;
+  function render(text) {
+    var out = "";
+    (text || "").split(";").forEach(function (line) {
+      var m = line.match(/v_(\w+)="([^"]*)"/);
+      if (!m) return;
+      var a = m[2].split("~");
+      var name = map[m[1]] || m[1];
+      var price = a[3], chg = a[31], pct = a[32];
+      var up = parseFloat(chg) >= 0;
+      var cls = up ? "up" : "down";
+      out += '<div class="market-item">'
+        + '<div class="market-name">' + name + '</div>'
+        + '<div class="market-price ' + cls + '">' + price + '</div>'
+        + '<div class="market-chg ' + cls + '">' + (up ? "+" : "") + chg + '　' + (up ? "+" : "") + pct + '%</div>'
+        + '</div>';
+    });
+    if (!out) return;
+    out += '<div class="market-note">行情来自公开数据 · 可能有延迟 · 仅供参考</div>';
+    box.innerHTML = out;
+  }
+  function load() {
+    fetch("https://qt.gtimg.cn/q=" + codes)
+      .then(function (r) { return r.text(); })
+      .then(render)
+      .catch(function () {});
+  }
+  load();
+  setInterval(load, 30000);
 })();
 </script>
 </body>
