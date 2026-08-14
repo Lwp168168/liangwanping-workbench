@@ -22,8 +22,6 @@
     --amber-soft: #fef6e7;
     --purple: #7c5cf3;
     --purple-soft: #f3f0ff;
-    --pink: #e34f7d;
-    --pink-soft: #fdf0f4;
     --radius: 18px;
     --radius-sm: 12px;
     --shadow: 0 2px 6px rgba(20,30,60,.04), 0 8px 24px rgba(20,30,60,.04);
@@ -31,14 +29,43 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-    background: linear-gradient(180deg, #f5f6fa 0%, #eef0f6 240px, #eef0f6 100%);
     color: var(--ink);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
+
+  /* 左侧导航 */
+  .left-nav {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 64px;
+    background: var(--card);
+    border-right: 1px solid var(--line);
+    padding: 20px 0;
+    display: flex; flex-direction: column; gap: 4px; align-items: center;
+    z-index: 10;
+  }
+  .nav-item {
+    width: 52px; padding: 10px 0;
+    background: transparent; border: none;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    border-radius: 12px;
+    color: var(--ink-2); font-size: 11px; cursor: pointer;
+    transition: .15s;
+  }
+  .nav-item .ico { font-size: 22px; line-height: 1; }
+  .nav-item:hover { background: var(--bg); }
+  .nav-item.active { background: var(--blue-soft); color: var(--blue); font-weight: 600; }
+  .nav-item.active .ico { transform: scale(1.1); }
+  .nav-item.disabled { opacity: .35; cursor: not-allowed; }
+
+  /* 右侧主区 */
+  .main-area {
+    margin-left: 64px;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f5f6fa 0%, #eef0f6 240px, #eef0f6 100%);
+  }
   .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 80px; }
 
-  /* 顶部 */
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 2px 4px; }
   .logo { display: flex; align-items: center; gap: 8px; font-size: 21px; font-weight: 700; letter-spacing: .5px; }
   .logo .dot { color: var(--brand); font-size: 22px; }
@@ -58,14 +85,12 @@
   .disclaimer { background: var(--amber-soft); color: #92400e; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin: 10px 0 14px; display: flex; gap: 8px; align-items: flex-start; }
   .disclaimer b { white-space: nowrap; }
 
-  /* 模块卡片 */
   .section { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; margin-bottom: 14px; }
   .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .sec-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
   .sec-title .ico { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
   .sec-meta { font-size: 11px; color: var(--ink-3); }
 
-  /* 行情 */
   .market-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .market-card { background: var(--blue-soft); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; }
   .market-card .name { font-size: 11px; color: var(--ink-2); }
@@ -74,7 +99,6 @@
   .market-card .up { color: var(--brand); }
   .market-card .down { color: var(--green); }
 
-  /* 估值 */
   .val-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .val-card { background: var(--purple-soft); border-radius: var(--radius-sm); padding: 10px 12px; }
   .val-card .name { font-size: 12px; color: var(--ink-2); }
@@ -84,14 +108,12 @@
   .col-mid { color: var(--amber); }
   .col-high { color: var(--brand); }
 
-  /* 今日头图 */
   .today-hero { background: linear-gradient(135deg, #c8161e 0%, #a50f16 100%); color: #fff; border-radius: var(--radius); padding: 22px 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; margin-bottom: 14px; }
   .today-hero::after { content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,.08); }
   .hero-date { font-size: 12px; opacity: .85; letter-spacing: 1px; }
   .hero-theme { font-size: 19px; font-weight: 700; margin-top: 6px; }
   .hero-line { margin-top: 10px; font-size: 14px; opacity: .95; border-left: 3px solid rgba(255,255,255,.6); padding-left: 10px; }
 
-  /* 信号灯 */
   .action-panel { border-radius: var(--radius); border: 1px solid var(--line); background: var(--card); overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; }
   .action-head { padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 12px; }
   .signal-dot { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.22); display: flex; align-items: center; justify-content: center; font-size: 22px; }
@@ -109,7 +131,6 @@
   .action-col.checklist li { padding-left: 20px; }
   .action-col.checklist li::before { content: "✓"; left: 0; color: var(--green); font-weight: 700; }
 
-  /* 三类卡片 */
   .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
   .c-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; cursor: pointer; transition: .18s; }
   .c-card:hover { transform: translateY(-2px); }
@@ -125,7 +146,6 @@
   .c-card .hint { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
   .c-card.open .hint { display: none; }
 
-  /* 历史 */
   .history-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
   .history-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .timeline-item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
@@ -136,11 +156,14 @@
 
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
 
-  /* 浮动按钮 */
   .fab { position: fixed; right: 20px; bottom: 24px; width: 48px; height: 48px; border-radius: 50%; background: var(--brand); color: #fff; box-shadow: 0 4px 14px rgba(200,22,30,.4); border: none; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 50; }
   .fab:active { transform: scale(.95); }
 
   @media (max-width: 640px) {
+    .left-nav { width: 54px; padding: 16px 0; }
+    .nav-item { width: 44px; padding: 8px 0; font-size: 10px; }
+    .nav-item .ico { font-size: 19px; }
+    .main-area { margin-left: 54px; }
     .market-grid { grid-template-columns: repeat(2, 1fr); }
     .grid { grid-template-columns: 1fr; }
     .action-cols { grid-template-columns: 1fr; }
@@ -149,59 +172,77 @@
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="logo"><span class="dot">●</span>凉丸瓶工作台</div>
-    <div class="header-date" id="header-date"></div>
-  </header>
 
-  <div class="greeting">
-    <div class="greeting-text">每日学一点，<b>慢慢变成高手</b></div>
-    <div class="greeting-pill" id="greeting-pill">黄灯</div>
+<nav class="left-nav">
+  <button class="nav-item active" data-section="finance">
+    <span class="ico">💰</span>
+    <span class="lbl">理财</span>
+  </button>
+  <button class="nav-item disabled" title="后续开放">
+    <span class="ico">📚</span>
+    <span class="lbl">学习</span>
+  </button>
+  <button class="nav-item disabled" title="后续开放">
+    <span class="ico">🏃</span>
+    <span class="lbl">健康</span>
+  </button>
+  <button class="nav-item disabled" title="后续开放">
+    <span class="ico">📰</span>
+    <span class="lbl">新闻</span>
+  </button>
+</nav>
+
+<main class="main-area">
+  <div class="wrap">
+    <header>
+      <div class="logo"><span class="dot">●</span>凉丸瓶工作台</div>
+      <div class="header-date" id="header-date"></div>
+    </header>
+
+    <div class="greeting">
+      <div class="greeting-text">理财板块 · 每日学一点，<b>慢慢变成高手</b></div>
+      <div class="greeting-pill" id="greeting-pill">黄灯</div>
+    </div>
+
+    <nav class="nav-pills">
+      <a class="pill active" href="#section-today">📌 今日</a>
+      <a class="pill" href="#section-market">📊 行情</a>
+      <a class="pill" href="#section-valuation">🌡 估值</a>
+      <a class="pill" href="#section-history">📅 回顾</a>
+    </nav>
+
+    <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
+
+    <section id="section-market" class="section">
+      <div class="sec-head">
+        <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">📊</span>实时行情</div>
+        <div class="sec-meta">每 30 秒刷新</div>
+      </div>
+      <div class="market-grid" id="market-panel"></div>
+    </section>
+
+    <section id="section-valuation" class="section">
+      <div class="sec-head">
+        <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值分位</div>
+        <div class="sec-meta">越低越便宜</div>
+      </div>
+      <div class="val-grid" id="valuation-panel"></div>
+    </section>
+
+    <section id="section-today">
+      <div id="today-hero"></div>
+      <div id="today-action"></div>
+      <div class="grid" id="today-cards"></div>
+    </section>
+
+    <section id="section-history" class="history-card" style="display:none;">
+      <div class="history-title">📅 往期回顾</div>
+      <div id="history-list"></div>
+    </section>
+
+    <footer id="footer"></footer>
   </div>
-
-  <nav class="nav-pills">
-    <a class="pill active" href="#section-today">📌 今日</a>
-    <a class="pill" href="#section-market">📊 行情</a>
-    <a class="pill" href="#section-valuation">🌡 估值</a>
-    <a class="pill" href="#section-history">📅 回顾</a>
-  </nav>
-
-  <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
-
-  <!-- 行情 -->
-  <section id="section-market" class="section">
-    <div class="sec-head">
-      <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">📊</span>实时行情</div>
-      <div class="sec-meta">每 30 秒刷新</div>
-    </div>
-    <div class="market-grid" id="market-panel"></div>
-  </section>
-
-  <!-- 估值 -->
-  <section id="section-valuation" class="section">
-    <div class="sec-head">
-      <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值分位</div>
-      <div class="sec-meta">越低越便宜</div>
-    </div>
-    <div class="val-grid" id="valuation-panel"></div>
-  </section>
-
-  <!-- 今日 -->
-  <section id="section-today">
-    <div id="today-hero"></div>
-    <div id="today-action"></div>
-    <div class="grid" id="today-cards"></div>
-  </section>
-
-  <!-- 历史 -->
-  <section id="section-history" class="history-card" style="display:none;">
-    <div class="history-title">📅 往期回顾</div>
-    <div id="history-list"></div>
-  </section>
-
-  <footer id="footer"></footer>
-</div>
+</main>
 
 <button class="fab" id="fab" title="回到顶部">↑</button>
 
