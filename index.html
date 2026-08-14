@@ -34,7 +34,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* 左侧导航 */
   .left-nav {
     position: fixed; left: 0; top: 0; bottom: 0;
     width: 64px;
@@ -58,13 +57,15 @@
   .nav-item.active .ico { transform: scale(1.1); }
   .nav-item.disabled { opacity: .35; cursor: not-allowed; }
 
-  /* 右侧主区 */
   .main-area {
     margin-left: 64px;
     min-height: 100vh;
     background: linear-gradient(180deg, #f5f6fa 0%, #eef0f6 240px, #eef0f6 100%);
   }
   .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
 
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding: 2px 4px; }
   .logo { display: flex; align-items: center; gap: 8px; font-size: 21px; font-weight: 700; letter-spacing: .5px; }
@@ -156,6 +157,12 @@
 
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
 
+  .empty-panel { text-align: center; padding: 80px 20px; }
+  .empty-ico { font-size: 56px; }
+  .empty-title { font-size: 18px; font-weight: 700; margin-top: 16px; }
+  .empty-desc { font-size: 13px; margin-top: 8px; color: var(--ink-2); }
+  .empty-tag { display: inline-block; margin-top: 16px; font-size: 12px; color: var(--ink-3); background: var(--card); border: 1px solid var(--line); padding: 6px 14px; border-radius: 999px; }
+
   .fab { position: fixed; right: 20px; bottom: 24px; width: 48px; height: 48px; border-radius: 50%; background: var(--brand); color: #fff; box-shadow: 0 4px 14px rgba(200,22,30,.4); border: none; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 50; }
   .fab:active { transform: scale(.95); }
 
@@ -174,11 +181,11 @@
 <body>
 
 <nav class="left-nav">
-  <button class="nav-item active" data-section="finance">
+  <button class="nav-item active" data-panel="finance">
     <span class="ico">💰</span>
     <span class="lbl">理财</span>
   </button>
-  <button class="nav-item disabled" title="后续开放">
+  <button class="nav-item" data-panel="media">
     <span class="ico">🎬</span>
     <span class="lbl">自媒体</span>
   </button>
@@ -199,48 +206,59 @@
       <div class="header-date" id="header-date"></div>
     </header>
 
-    <div class="greeting">
-      <div class="greeting-text">理财板块 · 每日学一点，<b>慢慢变成高手</b></div>
-      <div class="greeting-pill" id="greeting-pill">黄灯</div>
+    <div class="panel active" id="panel-finance">
+      <div class="greeting">
+        <div class="greeting-text">理财板块 · 每日学一点，<b>慢慢变成高手</b></div>
+        <div class="greeting-pill" id="greeting-pill">黄灯</div>
+      </div>
+
+      <nav class="nav-pills">
+        <a class="pill active" href="#section-today">📌 今日</a>
+        <a class="pill" href="#section-market">📊 行情</a>
+        <a class="pill" href="#section-valuation">🌡 估值</a>
+        <a class="pill" href="#section-history">📅 回顾</a>
+      </nav>
+
+      <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
+
+      <section id="section-market" class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">📊</span>实时行情</div>
+          <div class="sec-meta">每 30 秒刷新</div>
+        </div>
+        <div class="market-grid" id="market-panel"></div>
+      </section>
+
+      <section id="section-valuation" class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值分位</div>
+          <div class="sec-meta">越低越便宜</div>
+        </div>
+        <div class="val-grid" id="valuation-panel"></div>
+      </section>
+
+      <section id="section-today">
+        <div id="today-hero"></div>
+        <div id="today-action"></div>
+        <div class="grid" id="today-cards"></div>
+      </section>
+
+      <section id="section-history" class="history-card" style="display:none;">
+        <div class="history-title">📅 往期回顾</div>
+        <div id="history-list"></div>
+      </section>
+
+      <footer id="footer"></footer>
     </div>
 
-    <nav class="nav-pills">
-      <a class="pill active" href="#section-today">📌 今日</a>
-      <a class="pill" href="#section-market">📊 行情</a>
-      <a class="pill" href="#section-valuation">🌡 估值</a>
-      <a class="pill" href="#section-history">📅 回顾</a>
-    </nav>
-
-    <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
-
-    <section id="section-market" class="section">
-      <div class="sec-head">
-        <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">📊</span>实时行情</div>
-        <div class="sec-meta">每 30 秒刷新</div>
+    <div class="panel" id="panel-media">
+      <div class="empty-panel">
+        <div class="empty-ico">🎬</div>
+        <div class="empty-title">自媒体板块</div>
+        <div class="empty-desc">这里将放自媒体运营、涨粉、选题、变现等内容</div>
+        <div class="empty-tag">内容建设中 · 敬请期待</div>
       </div>
-      <div class="market-grid" id="market-panel"></div>
-    </section>
-
-    <section id="section-valuation" class="section">
-      <div class="sec-head">
-        <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值分位</div>
-        <div class="sec-meta">越低越便宜</div>
-      </div>
-      <div class="val-grid" id="valuation-panel"></div>
-    </section>
-
-    <section id="section-today">
-      <div id="today-hero"></div>
-      <div id="today-action"></div>
-      <div class="grid" id="today-cards"></div>
-    </section>
-
-    <section id="section-history" class="history-card" style="display:none;">
-      <div class="history-title">📅 往期回顾</div>
-      <div id="history-list"></div>
-    </section>
-
-    <footer id="footer"></footer>
+    </div>
   </div>
 </main>
 
@@ -372,6 +390,19 @@
   load();
   setInterval(load, 30000);
 })();
+
+document.querySelectorAll(".nav-item").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    if (btn.classList.contains("disabled")) return;
+    document.querySelectorAll(".nav-item").forEach(function (b) { b.classList.remove("active"); });
+    btn.classList.add("active");
+    var target = btn.getAttribute("data-panel");
+    document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("active"); });
+    var el = document.getElementById("panel-" + target);
+    if (el) el.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
 
 document.getElementById("fab").addEventListener("click", function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
