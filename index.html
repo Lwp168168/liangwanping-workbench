@@ -102,10 +102,16 @@
 
   .val-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .val-card { background: var(--purple-soft); border-radius: var(--radius-sm); padding: 10px 12px; }
-  .val-card .name { font-size: 12px; color: var(--ink-2); }
-  .val-card .pct { font-size: 20px; font-weight: 700; margin-top: 2px; }
-  .val-card .sub { font-size: 11px; color: var(--ink-3); margin-top: 1px; }
-  .val-card .pos { font-size: 11px; color: var(--ink-2); margin-top: 3px; }
+  .val-head { display: flex; align-items: center; justify-content: space-between; }
+  .val-card .name { font-size: 12.5px; color: var(--ink); font-weight: 600; }
+  .val-tag { font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+  .tag-good { background: var(--green-soft); color: var(--green); }
+  .tag-ok { background: var(--blue-soft); color: var(--blue); }
+  .tag-warn { background: var(--amber-soft); color: var(--amber); }
+  .tag-bad { background: var(--brand-soft); color: var(--brand); }
+  .val-card .pct { font-size: 20px; font-weight: 700; margin-top: 4px; }
+  .vrow { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-top: 4px; }
+  .vrk { color: var(--ink-3); }
   .pct-label { font-size: 11px; font-weight: 400; color: var(--ink-3); margin-left: 3px; }
   .col-low { color: var(--green); }
   .col-mid { color: var(--amber); }
@@ -245,7 +251,7 @@
       <section id="section-valuation" class="section">
         <div class="sec-head">
           <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值体检</div>
-          <div class="sec-meta">分位·位置·ROE·股息 四维看</div>
+          <div class="sec-meta">🟢好 · 🟡中 · 🔴差</div>
         </div>
         <div class="val-grid" id="valuation-panel"></div>
       </section>
@@ -381,14 +387,30 @@
   var box = document.getElementById("valuation-panel");
   if (!V || !V.items || !V.items.length || !box) return;
   function cls(pct) { if (pct < 30) return "col-low"; if (pct > 70) return "col-high"; return "col-mid"; }
+  function posCls(p) { if (p == null) return "col-mid"; if (p < 33) return "col-low"; if (p > 67) return "col-high"; return "col-mid"; }
+  function roeCls(v) { if (v >= 10) return "col-low"; if (v >= 5) return "col-mid"; return "col-high"; }
+  function yldCls(v) { if (v >= 3) return "col-low"; if (v >= 1.5) return "col-mid"; return "col-high"; }
+  function tag(it) {
+    var s = 0;
+    s += it.pePct < 30 ? 2 : (it.pePct < 70 ? 1 : 0);
+    s += (it.pos52 == null) ? 1 : (it.pos52 < 33 ? 2 : (it.pos52 < 67 ? 1 : 0));
+    s += it.roe >= 10 ? 2 : (it.roe >= 5 ? 1 : 0);
+    s += it.yield >= 3 ? 2 : (it.yield >= 1.5 ? 1 : 0);
+    if (s >= 6) return ["优选", "tag-good"];
+    if (s >= 5) return ["尚可", "tag-ok"];
+    if (s >= 3) return ["偏贵", "tag-warn"];
+    return ["谨慎", "tag-bad"];
+  }
   var html = "";
   V.items.forEach(function (it) {
-    var posTxt = (it.pos52 != null) ? ('52周位置 ' + it.pos52 + '%') : '位置数据暂无';
+    var tg = tag(it);
+    var posTxt = (it.pos52 != null) ? (it.pos52 + '%') : '—';
     html += '<div class="val-card">'
-      + '<div class="name">' + it.name + '</div>'
+      + '<div class="val-head"><span class="name">' + it.name + '</span><span class="val-tag ' + tg[1] + '">' + tg[0] + '</span></div>'
       + '<div class="pct ' + cls(it.pePct) + '">' + it.pePct + '%<span class="pct-label">分位</span></div>'
-      + '<div class="pos">📈 ' + posTxt + '</div>'
-      + '<div class="sub">ROE ' + it.roe + '% · 股息 ' + it.yield + '%</div>'
+      + '<div class="vrow"><span class="vrk">位置</span><span class="' + posCls(it.pos52) + '">' + posTxt + '</span></div>'
+      + '<div class="vrow"><span class="vrk">ROE</span><span class="' + roeCls(it.roe) + '">' + it.roe + '%</span></div>'
+      + '<div class="vrow"><span class="vrk">股息</span><span class="' + yldCls(it.yield) + '">' + it.yield + '%</span></div>'
       + '</div>';
   });
   box.innerHTML = html;
