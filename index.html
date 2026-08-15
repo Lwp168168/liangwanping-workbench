@@ -171,6 +171,19 @@
   .timeline-item .t-theme { font-size: 14px; font-weight: 600; margin-top: 2px; }
   .timeline-item .t-line { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
 
+  .board-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
+  .board-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .board-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .board-meta { font-size: 11px; color: var(--ink-3); }
+  .board-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px; }
+  .board-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--bg); font-size: 13px; }
+  .board-name { font-weight: 600; }
+  .board-chg { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .board-chg.up { color: #c8161e; }
+  .board-chg.down { color: #18a957; }
+  .board-note { font-size: 11px; color: var(--ink-3); margin-top: 10px; line-height: 1.6; }
+  @media (max-width: 640px){ .board-list { grid-template-columns: 1fr; } }
+
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
 
   .empty-panel { text-align: center; padding: 80px 20px; }
@@ -275,6 +288,15 @@
         <div id="today-hero"></div>
         <div id="today-action"></div>
         <div class="grid" id="today-cards"></div>
+      </section>
+
+      <section id="section-board" class="board-card">
+        <div class="board-head">
+          <div class="board-title">🧭 板块关注 · 近期哪些板块在走强</div>
+          <div class="board-meta" id="board-updated"></div>
+        </div>
+        <div class="board-list" id="board-list"></div>
+        <div class="board-note" id="board-note"></div>
       </section>
 
       <footer id="footer"></footer>
@@ -392,6 +414,22 @@
       + '</div>';
   });
   box.innerHTML = html;
+})();
+
+(function () {
+  var S = window.SECTORS;
+  if (!S || !S.boards || !S.boards.length) return;
+  var list = document.getElementById("board-list");
+  document.getElementById("board-updated").textContent = "更新 " + S.updated;
+  document.getElementById("board-note").textContent = S.note;
+  S.boards.forEach(function (b) {
+    var d = document.createElement("div");
+    d.className = "board-item";
+    var up = b.chg >= 0;
+    d.innerHTML = '<span class="board-name">' + b.name + '</span>'
+      + '<span class="board-chg ' + (up ? "up" : "down") + '">' + (up ? "+" : "") + b.chg + '%</span>';
+    list.appendChild(d);
+  });
 })();
 
 (function () {
