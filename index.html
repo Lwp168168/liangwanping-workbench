@@ -165,8 +165,6 @@
   .c-card .hint { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
   .c-card.open .hint { display: none; }
 
-  .history-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; }
-  .history-title { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .timeline-item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
   .timeline-item:last-child { border-bottom: none; }
   .timeline-item .t-date { font-size: 11px; color: var(--ink-3); }
@@ -235,7 +233,6 @@
         <a class="pill active" href="#section-today">📌 今日</a>
         <a class="pill" href="#section-market">📊 行情</a>
         <a class="pill" href="#section-valuation">🌡 估值</a>
-        <a class="pill" href="#section-history">📅 回顾</a>
       </nav>
 
       <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
@@ -278,11 +275,6 @@
         <div id="today-hero"></div>
         <div id="today-action"></div>
         <div class="grid" id="today-cards"></div>
-      </section>
-
-      <section id="section-history" class="history-card" style="display:none;">
-        <div class="history-title">📅 往期回顾</div>
-        <div id="history-list"></div>
       </section>
 
       <footer id="footer"></footer>
@@ -366,20 +358,6 @@
     grid.appendChild(div);
   });
 
-  if (C.daily.length > 1) {
-    var wrap = document.getElementById("section-history");
-    var list = document.getElementById("history-list");
-    wrap.style.display = "block";
-    for (var i = 1; i < C.daily.length; i++) {
-      var d = C.daily[i];
-      var item = document.createElement("div");
-      item.className = "timeline-item";
-      item.innerHTML = '<div class="t-date">' + d.date + " · " + d.week + '</div>'
-        + '<div class="t-theme">' + d.theme + '</div>'
-        + '<div class="t-line">' + d.oneLiner + '</div>';
-      list.appendChild(item);
-    }
-  }
 })();
 
 (function () {
