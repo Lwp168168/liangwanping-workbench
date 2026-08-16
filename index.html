@@ -516,8 +516,9 @@
     });
     if (out) box.innerHTML = out;
   }
+  function gbk(r) { return r.arrayBuffer().then(function (b) { return new TextDecoder("gbk").decode(b); }); }
   function load() {
-    fetch("https://qt.gtimg.cn/q=" + codes).then(function (r) { return r.text(); }).then(render).catch(function(){});
+    fetch("https://qt.gtimg.cn/q=" + codes).then(gbk).then(render).catch(function(){});
   }
   load();
   setInterval(load, 30000);
@@ -554,7 +555,7 @@
     if (!raw) { out.innerHTML = '<div class="quote-err">请输入 6 位股票代码，如 600519 / 002185</div>'; return; }
     var code = norm(raw);
     out.innerHTML = '<div class="quote-loading">查询中…</div>';
-    fetch("https://qt.gtimg.cn/q=" + code).then(function (r) { return r.text(); }).then(function (t) {
+    fetch("https://qt.gtimg.cn/q=" + code).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new TextDecoder("gbk").decode(b); }).then(function (t) {
       var m = t.match(/v_(\w+)="([^"]*)"/);
       if (!m) { out.innerHTML = '<div class="quote-err">没查到，代码是否正确？试试 600519</div>'; return; }
       var a = m[2].split("~");
