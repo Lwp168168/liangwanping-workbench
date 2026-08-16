@@ -190,6 +190,34 @@
   .lchg.up { color: #c8161e; }
   .lchg.down { color: #18a957; }
   .board-note { font-size: 11px; color: var(--ink-3); margin-top: 10px; line-height: 1.6; }
+  /* 查个股 */
+  .quote-box { display: flex; gap: 8px; margin-bottom: 12px; }
+  .quote-input { flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; font-size: 14px; background: var(--bg); color: var(--ink); }
+  .quote-btn { padding: 10px 18px; border: none; border-radius: 10px; background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .quote-card { background: var(--bg); border-radius: 12px; padding: 14px; }
+  .quote-top { display: flex; align-items: baseline; gap: 8px; }
+  .quote-name { font-size: 17px; font-weight: 700; }
+  .quote-code { font-size: 12px; color: var(--ink-3); }
+  .quote-price { font-size: 24px; font-weight: 800; margin: 6px 0; font-variant-numeric: tabular-nums; }
+  .quote-price.up, .quote-chg.up { color: #c8161e; }
+  .quote-price.down, .quote-chg.down { color: #18a957; }
+  .quote-chg { font-size: 13px; font-weight: 600; }
+  .quote-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; margin: 10px 0; font-size: 13px; }
+  .qrow { display: flex; justify-content: space-between; border-bottom: 1px dashed var(--line); padding: 4px 0; }
+  .qrow span:first-child { color: var(--ink-3); }
+  .quote-lights { display: flex; gap: 10px; margin: 12px 0; }
+  .ql { flex: 1; text-align: center; background: var(--card); border-radius: 10px; padding: 10px 6px; }
+  .ql-k { font-size: 12px; color: var(--ink-3); }
+  .ql-dot { width: 18px; height: 18px; border-radius: 50%; margin: 6px auto; }
+  .ql-dot.col-low { background: #18a957; }
+  .ql-dot.col-mid { background: #d97706; }
+  .ql-dot.col-high { background: #c8161e; }
+  .ql-v { font-weight: 700; font-size: 15px; }
+  .ql-note { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .pos-bar { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; margin: 6px 0; }
+  .pos-fill { height: 100%; background: linear-gradient(90deg, #18a957, #d97706, #c8161e); }
+  .quote-tip { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 8px; }
+  .quote-err, .quote-loading { font-size: 13px; color: var(--ink-3); padding: 10px; text-align: center; }
   @media (max-width: 640px){ .board-list { grid-template-columns: 1fr; } }
 
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
@@ -254,6 +282,7 @@
         <a class="pill active" href="#section-today">📌 今日</a>
         <a class="pill" href="#section-market">📊 行情</a>
         <a class="pill" href="#section-valuation">🌡 估值</a>
+        <a class="pill" href="#section-quote">🔍 查股</a>
       </nav>
 
       <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
@@ -305,6 +334,18 @@
         </div>
         <div class="board-list" id="board-list"></div>
         <div class="board-note" id="board-note"></div>
+      </section>
+
+      <section id="section-quote" class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">🔍</span>查个股 · 输入代码看两盏灯</div>
+          <div class="sec-meta">PE + 52周位置</div>
+        </div>
+        <div class="quote-box">
+          <input class="quote-input" id="quote-input" placeholder="输入6位代码，如 600519 / 002185 / 300750" />
+          <button class="quote-btn" id="quote-btn">查询</button>
+        </div>
+        <div id="quote-result"></div>
       </section>
 
       <footer id="footer"></footer>
@@ -480,6 +521,71 @@
   }
   load();
   setInterval(load, 30000);
+})();
+
+(function () {
+  var btn = document.getElementById("quote-btn");
+  var input = document.getElementById("quote-input");
+  var out = document.getElementById("quote-result");
+  if (!btn || !input || !out) return;
+  function norm(code) {
+    code = code.trim().toLowerCase();
+    if (/^(sh|sz|bj)/.test(code)) return code;
+    if (/^6/.test(code)) return "sh" + code;
+    if (/^[03]/.test(code)) return "sz" + code;
+    if (/^8/.test(code)) return "bj" + code;
+    return code;
+  }
+  function peLight(pe) {
+    if (pe == null || isNaN(pe)) return ["数据缺失", "col-mid", "暂无 PE 数据"];
+    if (pe < 15) return ["偏低", "col-low", "PE<15，估值处低位"];
+    if (pe < 30) return ["合理", "col-mid", "PE 15~30，正常区间"];
+    if (pe < 50) return ["偏高", "col-mid", "PE 30~50，注意溢价"];
+    return ["偏贵", "col-high", "PE>50，估值偏贵"];
+  }
+  function posLight(p) {
+    if (p == null || isNaN(p)) return ["—", "col-mid"];
+    if (p < 30) return ["低位", "col-low"];
+    if (p <= 70) return ["中位", "col-mid"];
+    return ["高位", "col-high"];
+  }
+  function go() {
+    var raw = input.value.trim();
+    if (!raw) { out.innerHTML = '<div class="quote-err">请输入 6 位股票代码，如 600519 / 002185</div>'; return; }
+    var code = norm(raw);
+    out.innerHTML = '<div class="quote-loading">查询中…</div>';
+    fetch("https://qt.gtimg.cn/q=" + code).then(function (r) { return r.text(); }).then(function (t) {
+      var m = t.match(/v_(\w+)="([^"]*)"/);
+      if (!m) { out.innerHTML = '<div class="quote-err">没查到，代码是否正确？试试 600519</div>'; return; }
+      var a = m[2].split("~");
+      var name = a[1], price = a[3], chg = a[31], pct = a[32];
+      var pe = parseFloat(a[39]), cap = parseFloat(a[44]);
+      var hi52 = parseFloat(a[47]), lo52 = parseFloat(a[48]);
+      var up = parseFloat(chg) >= 0;
+      var cls = up ? "up" : "down";
+      var pos = (hi52 && lo52 && hi52 > lo52) ? (price - lo52) / (hi52 - lo52) * 100 : null;
+      var peL = peLight(pe), posL = posLight(pos);
+      out.innerHTML =
+        '<div class="quote-card">'
+        + '<div class="quote-top"><span class="quote-name">' + name + '</span><span class="quote-code">' + code.toUpperCase() + '</span></div>'
+        + '<div class="quote-price ' + cls + '">' + price + ' <span class="quote-chg ' + cls + '">' + (up ? "+" : "") + chg + " (" + (up ? "+" : "") + pct + '%)</span></div>'
+        + '<div class="quote-rows">'
+        + '<div class="qrow"><span>市盈率 PE</span><span>' + (isNaN(pe) ? "—" : pe) + '</span></div>'
+        + '<div class="qrow"><span>总市值</span><span>' + (isNaN(cap) ? "—" : cap + " 亿") + '</span></div>'
+        + '<div class="qrow"><span>52周最高</span><span>' + (hi52 || "—") + '</span></div>'
+        + '<div class="qrow"><span>52周最低</span><span>' + (lo52 || "—") + '</span></div>'
+        + '</div>'
+        + (pos != null ? '<div class="pos-bar"><div class="pos-fill" style="width:' + Math.max(2, Math.min(100, pos)) + '%"></div></div>' : '')
+        + '<div class="quote-lights">'
+        + '<div class="ql"><div class="ql-k">估值灯</div><div class="ql-dot ' + peL[1] + '"></div><div class="ql-v">' + peL[0] + '</div><div class="ql-note">' + peL[2] + '</div></div>'
+        + '<div class="ql"><div class="ql-k">位置灯</div><div class="ql-dot ' + posL[1] + '"></div><div class="ql-v">' + posL[0] + '</div><div class="ql-note">52周位置 ' + (pos == null ? "—" : pos.toFixed(0) + "%") + '</div></div>'
+        + '</div>'
+        + '<div class="quote-tip">⚠️ 仅为 PE + 52周位置两维速览。不同行业 PE 差异大（银行 PE 低、科技 PE 高均属正常），完整判断还需结合 ROE、负债率、业绩趋势。本工具仅供学习，不构成任何买卖建议。</div>'
+        + '</div>';
+    }).catch(function () { out.innerHTML = '<div class="quote-err">查询失败，请检查网络后重试</div>'; });
+  }
+  btn.addEventListener("click", go);
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
 })();
 
 document.querySelectorAll(".nav-item").forEach(function (btn) {
