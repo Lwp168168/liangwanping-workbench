@@ -221,12 +221,17 @@
   .quote-err, .quote-loading { font-size: 13px; color: var(--ink-3); padding: 10px; text-align: center; }
   /* 股票课堂 */
   .knowledge-list { display: grid; grid-template-columns: 1fr; gap: 14px; }
-  .knowledge-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
-  .knowledge-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .knowledge-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; cursor: pointer; transition: .15s; }
+  .knowledge-card:hover { transform: translateY(-1px); }
+  .knowledge-head { display: flex; align-items: center; gap: 10px; margin-bottom: 0; }
   .knowledge-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: 0 0 34px; }
   .knowledge-title { font-size: 15px; font-weight: 700; }
+  .knowledge-summary { font-size: 12px; color: var(--ink-2); margin-top: 2px; }
   .knowledge-formula { background: var(--bg); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
   .knowledge-text { font-size: 13px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
+  .knowledge-card.collapsed .knowledge-body { display: none; }
+  .knowledge-hint { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
+  .knowledge-card:not(.collapsed) .knowledge-hint { display: none; }
   .scale-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
   .scale-table th, .scale-table td { padding: 6px 8px; border: 1px solid var(--line); text-align: left; }
   .scale-table th { background: var(--bg); color: var(--ink-2); font-weight: 600; }
@@ -390,58 +395,142 @@
       <section id="section-class" class="section collapsible">
         <div class="sec-head">
           <div class="sec-title"><span class="ico" style="background:var(--amber-soft)">📚</span>股票课堂 · 常忘记就回来看</div>
-          <div class="sec-meta">常驻知识卡</div>
+          <div class="sec-meta">点击卡片看明细</div>
         </div>
         <div class="knowledge-list">
-          <div class="knowledge-card">
+          <div class="knowledge-card collapsed">
             <div class="knowledge-head">
               <div class="knowledge-icon" style="background:var(--blue-soft);color:var(--blue)">PE</div>
-              <div class="knowledge-title">市盈率：多少年能回本</div>
+              <div>
+                <div class="knowledge-title">市盈率：多少年能回本</div>
+                <div class="knowledge-summary">PE 看“回本年限”</div>
+              </div>
             </div>
-            <div class="knowledge-formula">PE = 股价 ÷ 每股收益</div>
-            <div class="knowledge-text">
-              每股每年帮你赚 1 元，股价 20 元，PE = 20，即按当前赚钱速度要 20 年回本。PE 越高，市场越“赌”它未来利润大幅增长。
+            <div class="knowledge-body">
+              <div class="knowledge-formula">PE = 股价 ÷ 每股收益</div>
+              <div class="knowledge-text">
+                每股每年帮你赚 1 元，股价 20 元，PE = 20，即按当前赚钱速度要 20 年回本。PE 越高，市场越“赌”它未来利润大幅增长。
+              </div>
+              <table class="scale-table">
+                <tr><th>PE</th><th>信号</th></tr>
+                <tr><td>&lt; 15</td><td>偏低</td></tr>
+                <tr><td>15 ~ 30</td><td>合理</td></tr>
+                <tr><td>30 ~ 50</td><td>偏高</td></tr>
+                <tr><td>&gt; 50</td><td>偏贵</td></tr>
+              </table>
             </div>
-            <table class="scale-table">
-              <tr><th>PE</th><th>信号</th></tr>
-              <tr><td>&lt; 15</td><td>偏低</td></tr>
-              <tr><td>15 ~ 30</td><td>合理</td></tr>
-              <tr><td>30 ~ 50</td><td>偏高</td></tr>
-              <tr><td>&gt; 50</td><td>偏贵</td></tr>
-            </table>
+            <div class="knowledge-hint">点击展开 ↓</div>
           </div>
-          <div class="knowledge-card">
+
+          <div class="knowledge-card collapsed">
             <div class="knowledge-head">
               <div class="knowledge-icon" style="background:var(--green-soft);color:var(--green)">PB</div>
-              <div class="knowledge-title">市净率：为“账面家底”付了几倍</div>
+              <div>
+                <div class="knowledge-title">市净率：为“账面家底”付了几倍</div>
+                <div class="knowledge-summary">PB 看“家底溢价”</div>
+              </div>
             </div>
-            <div class="knowledge-formula">PB = 股价 ÷ 每股净资产</div>
-            <div class="knowledge-text">
-              每股净资产是公司清算时股东能分到的家底。PB = 1 表示股价刚好等于家底；PB &gt; 3 说明市场为它支付了“无形资产”溢价，如技术、品牌、未来赚钱能力。
+            <div class="knowledge-body">
+              <div class="knowledge-formula">PB = 股价 ÷ 每股净资产</div>
+              <div class="knowledge-text">
+                每股净资产是公司清算时股东能分到的家底。PB = 1 表示股价刚好等于家底；PB &gt; 3 说明市场为它支付了“无形资产”溢价，如技术、品牌、未来赚钱能力。
+              </div>
+              <table class="scale-table">
+                <tr><th>PB</th><th>信号</th></tr>
+                <tr><td>&lt; 1</td><td>破净，股价低于净资产</td></tr>
+                <tr><td>1 ~ 3</td><td>正常</td></tr>
+                <tr><td>&gt; 3</td><td>偏高</td></tr>
+              </table>
             </div>
-            <table class="scale-table">
-              <tr><th>PB</th><th>信号</th></tr>
-              <tr><td>&lt; 1</td><td>破净，股价低于净资产</td></tr>
-              <tr><td>1 ~ 3</td><td>正常</td></tr>
-              <tr><td>&gt; 3</td><td>偏高</td></tr>
-            </table>
+            <div class="knowledge-hint">点击展开 ↓</div>
           </div>
-          <div class="knowledge-card">
+
+          <div class="knowledge-card collapsed">
             <div class="knowledge-head">
               <div class="knowledge-icon" style="background:var(--purple-soft);color:var(--purple)">ROE</div>
-              <div class="knowledge-title">净资产收益率：股东的钱赚多少</div>
+              <div>
+                <div class="knowledge-title">净资产收益率：股东的钱赚多少</div>
+                <div class="knowledge-summary">ROE 看“赚钱效率”</div>
+              </div>
             </div>
-            <div class="knowledge-formula">ROE = 净利润 ÷ 净资产 = 每股收益 ÷ 每股净资产</div>
-            <div class="knowledge-text">
-              ROE 越高，说明公司用股东的钱越会赚钱。长期 &gt; 15% 通常算优秀。ROE 低而 PE 高，利润薄会把 PE 撑得很高。
+            <div class="knowledge-body">
+              <div class="knowledge-formula">ROE = 净利润 ÷ 净资产 = 每股收益 ÷ 每股净资产</div>
+              <div class="knowledge-text">
+                ROE 越高，说明公司用股东的钱越会赚钱。长期 &gt; 15% 通常算优秀。ROE 低而 PE 高，利润薄会把 PE 撑得很高。
+              </div>
+              <table class="scale-table">
+                <tr><th>ROE</th><th>信号</th></tr>
+                <tr><td>&lt; 5%</td><td>偏弱</td></tr>
+                <tr><td>5% ~ 10%</td><td>及格</td></tr>
+                <tr><td>10% ~ 15%</td><td>良好</td></tr>
+                <tr><td>&gt; 15%</td><td>优秀</td></tr>
+              </table>
             </div>
-            <table class="scale-table">
-              <tr><th>ROE</th><th>信号</th></tr>
-              <tr><td>&lt; 5%</td><td>偏弱</td></tr>
-              <tr><td>5% ~ 10%</td><td>及格</td></tr>
-              <tr><td>10% ~ 15%</td><td>良好</td></tr>
-              <tr><td>&gt; 15%</td><td>优秀</td></tr>
-            </table>
+            <div class="knowledge-hint">点击展开 ↓</div>
+          </div>
+
+          <div class="knowledge-card collapsed">
+            <div class="knowledge-head">
+              <div class="knowledge-icon" style="background:var(--amber-soft);color:var(--amber)">ROE</div>
+              <div>
+                <div class="knowledge-title">ROE 怎么用：公司赚不赚钱，看这一个数</div>
+                <div class="knowledge-summary">大白话 + 举例 + 口诀</div>
+              </div>
+            </div>
+            <div class="knowledge-body">
+              <div class="knowledge-formula">ROE = 净利润 ÷ 净资产</div>
+              <div class="knowledge-text">
+                股东每投 100 块钱，公司一年能帮他赚回几块。<br><br>
+                <b>举个例子：</b>你拿 100 万本金开个小店，一年净赚 15 万，那 ROE 就是 15%——这 100 万的「赚钱效率」就是 15%。
+              </div>
+              <div class="knowledge-text">
+                <b>怎么看：</b><br>
+                · 宽基指数 ROE 10% 以上算优秀，说明篮子里公司整体能赚钱。<br>
+                · 个股连续多年 15% 以上更优；低于 5% 说明赚钱能力弱，得打个问号。<br>
+                · 注意别只看 ROE 高低——有些公司靠大量借钱（高杠杆）把 ROE 顶高，风险也大，要结合资产负债率一起看。
+              </div>
+              <div class="knowledge-tip" style="margin-top:12px;">
+                <b>口诀：</b>赚不赚看 ROE，10% 是及格线、15% 是优秀线。<br>
+                <b>风险提示：</b>ROE 反映过去赚钱能力，不代表未来；高 ROE 若靠高杠杆堆出来要警惕。
+              </div>
+            </div>
+            <div class="knowledge-hint">点击展开 ↓</div>
+          </div>
+
+          <div class="knowledge-card collapsed">
+            <div class="knowledge-head">
+              <div class="knowledge-icon" style="background:var(--brand-soft);color:var(--brand)">四维</div>
+              <div>
+                <div class="knowledge-title">怎么用 ROE 判断值不值</div>
+                <div class="knowledge-summary">别只看分位，四维口诀一起算</div>
+              </div>
+            </div>
+            <div class="knowledge-body">
+              <div class="knowledge-text">
+                记一个「四维口诀」：①分位贵不贵 ②52周位置趋势 ③ROE赚不赚 ④股息分红。<br><br>
+                拿估值体检卡里的两个指数做对比，你就知道为什么不能单看分位：
+              </div>
+              <div class="example" style="margin:10px 0 0;">
+                <div class="example-title">上证50</div>
+                <div class="example-text">
+                  PE 分位 76.6%（偏高）· 52周位置 34.3%（近一年低位）· ROE 10.8%（赚得动）· 股息 3.19%（有分红兜底）<br><br>
+                  单看分位 76.6% 确实不便宜，但它位置在低位、ROE 高、股息稳，是「高分红的蓝筹在低位横盘」，综合安全边际其实不差。
+                </div>
+              </div>
+              <div class="example" style="margin:10px 0 0;">
+                <div class="example-title">科创50</div>
+                <div class="example-text">
+                  PE 分位 96.7%（极贵）· 52周位置 54.4%（中间）· ROE 4.3%（低于5%，赚钱弱）· 股息 0.24%（几乎没兜底）<br><br>
+                  分位快顶到历史最高，ROE 又弱、还不分红，属于「又贵又不赚钱」，这才是真贵。
+                </div>
+              </div>
+              <div class="knowledge-tip" style="margin-top:12px;">
+                <b>对比结论：</b>上证50 分位 76.6% 看着不低，但位置低 + ROE 硬 + 有股息，比科创50（分位 96.7% 但 ROE 只有 4.3%）要稳得多。<br><br>
+                所以：贵不贵不能只看分位，要把位置、ROE、股息一起算——这就是四维口诀的用法。<br>
+                <b>风险提示：</b>以上只教判断方法，不点名推荐任何标的，请结合自身情况独立决策。
+              </div>
+            </div>
+            <div class="knowledge-hint">点击展开 ↓</div>
           </div>
         </div>
         <div class="knowledge-tip">
@@ -894,6 +983,13 @@
     head.addEventListener("click", function () {
       var collapsed = sec.classList.toggle("collapsed");
       caret.textContent = collapsed ? "▸ 展开" : "▾ 收起";
+    });
+  });
+
+  // 股票课堂内部知识卡折叠：默认收起，点卡片展开
+  document.querySelectorAll(".knowledge-card").forEach(function (card) {
+    card.addEventListener("click", function () {
+      card.classList.toggle("collapsed");
     });
   });
 })();
