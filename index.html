@@ -243,6 +243,15 @@
   .exam-signal.high { background: var(--brand-soft); color: var(--brand); }
   .exam-missing { color: var(--ink-3); font-size: 11px; margin-top: 4px; }
   .exam-tip { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 10px; }
+  /* 区块折叠：默认收起，点标题展开，缩短首屏 */
+  .collapsible > .sec-head, .collapsible > .board-head { cursor: pointer; user-select: none; }
+  .collapsible > .sec-head:hover .sec-title, .collapsible > .board-head:hover .board-title { color: var(--blue); }
+  .caret { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 600; color: var(--ink-3); }
+  .collapsible.collapsed > .val-grid,
+  .collapsible.collapsed > .knowledge-list,
+  .collapsible.collapsed > .knowledge-tip,
+  .collapsible.collapsed > .board-list,
+  .collapsible.collapsed > .board-note { display: none; }
   @media (max-width: 640px){ .board-list { grid-template-columns: 1fr; } }
   @media (max-width: 640px){ .exam-grid { grid-template-columns: 1fr; } }
 
@@ -322,7 +331,7 @@
         <div class="market-grid" id="market-panel"></div>
       </section>
 
-      <section id="section-valuation" class="section">
+      <section id="section-valuation" class="section collapsible">
         <div class="sec-head">
           <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🌡</span>指数估值体检</div>
           <div class="sec-meta">🟢好 · 🟡中 · 🔴差</div>
@@ -354,7 +363,7 @@
         <div class="grid" id="today-cards"></div>
       </section>
 
-      <section id="section-board" class="board-card">
+      <section id="section-board" class="board-card collapsible">
         <div class="board-head">
           <div class="board-title">🧭 板块关注 · 近期哪些板块在走强</div>
           <div class="board-meta" id="board-updated"></div>
@@ -363,7 +372,7 @@
         <div class="board-note" id="board-note"></div>
       </section>
 
-      <section id="section-class" class="section">
+      <section id="section-class" class="section collapsible">
         <div class="sec-head">
           <div class="sec-title"><span class="ico" style="background:var(--amber-soft)">📚</span>股票课堂 · 常忘记就回来看</div>
           <div class="sec-meta">常驻知识卡</div>
@@ -726,6 +735,26 @@
   }
   btn.addEventListener("click", go);
   input.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+})();
+
+(function () {
+  // 区块折叠：默认收起，点标题展开，缩短首屏
+  ["section-valuation", "section-board", "section-class"].forEach(function (id) {
+    var sec = document.getElementById(id);
+    if (!sec) return;
+    sec.classList.add("collapsed");
+    var head = sec.querySelector(".sec-head, .board-head");
+    if (!head) return;
+    var title = head.querySelector(".sec-title, .board-title");
+    var caret = document.createElement("span");
+    caret.className = "caret";
+    caret.textContent = "▸ 展开";
+    if (title) title.appendChild(caret);
+    head.addEventListener("click", function () {
+      var collapsed = sec.classList.toggle("collapsed");
+      caret.textContent = collapsed ? "▸ 展开" : "▾ 收起";
+    });
+  });
 })();
 
 document.querySelectorAll(".nav-item").forEach(function (btn) {
