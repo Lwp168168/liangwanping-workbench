@@ -243,6 +243,17 @@
   .exam-signal.high { background: var(--brand-soft); color: var(--brand); }
   .exam-missing { color: var(--ink-3); font-size: 11px; margin-top: 4px; }
   .exam-tip { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 10px; }
+  /* 自选股 */
+  .watch-box { display: flex; gap: 8px; margin-bottom: 10px; }
+  .watch-item { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden; }
+  .watch-head { display: flex; align-items: center; gap: 8px; padding: 12px 14px; cursor: pointer; }
+  .watch-name { font-size: 15px; font-weight: 700; }
+  .watch-sub { font-size: 12px; color: var(--ink-3); flex: 1; }
+  .watch-del { color: var(--ink-3); font-size: 13px; padding: 2px 6px; border-radius: 6px; }
+  .watch-del:hover { background: var(--bg); color: #c8161e; }
+  .watch-body { padding: 0 14px 14px; display: none; }
+  .watch-item:not(.collapsed) .watch-body { display: block; }
+  .watch-note { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 6px; }
   /* 区块折叠：默认收起，点标题展开，缩短首屏 */
   .collapsible > .sec-head, .collapsible > .board-head { cursor: pointer; user-select: none; }
   .collapsible > .sec-head:hover .sec-title, .collapsible > .board-head:hover .board-title { color: var(--blue); }
@@ -319,6 +330,7 @@
         <a class="pill" href="#section-valuation">🌡 估值</a>
         <a class="pill" href="#section-class">📚 课堂</a>
         <a class="pill" href="#section-quote">🔍 查股</a>
+        <a class="pill" href="#section-watch">⭐ 自选</a>
       </nav>
 
       <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
@@ -444,6 +456,19 @@
           <button class="quote-btn" id="quote-btn">查询</button>
         </div>
         <div id="quote-result"></div>
+      </section>
+
+      <section id="section-watch" class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--amber-soft)">⭐</span>自选股 · 点开看实时体检</div>
+          <div class="sec-meta">本机保存</div>
+        </div>
+        <div class="watch-box">
+          <input class="quote-input" id="watch-input" placeholder="加一只自选，输入6位代码，如 600519 / 002324" />
+          <button class="quote-btn" id="watch-add">添加</button>
+        </div>
+        <div id="watch-list"></div>
+        <div class="watch-note">自选股保存在你本机浏览器（localStorage），换设备 / 清缓存会丢失。点任意一只展开看 PE/PB/位置灯 + 四步体检；深度基本面仍需同花顺 F10 或把代码发给我做完整分析。仅作学习，不构成任何买卖建议。</div>
       </section>
 
       <footer id="footer"></footer>
@@ -623,18 +648,7 @@
 })();
 
 (function () {
-  var btn = document.getElementById("quote-btn");
-  var input = document.getElementById("quote-input");
-  var out = document.getElementById("quote-result");
-  if (!btn || !input || !out) return;
-  function norm(code) {
-    code = code.trim().toLowerCase();
-    if (/^(sh|sz|bj)/.test(code)) return code;
-    if (/^6/.test(code)) return "sh" + code;
-    if (/^[03]/.test(code)) return "sz" + code;
-    if (/^8/.test(code)) return "bj" + code;
-    return code;
-  }
+  // 共享：四步个股体检卡（查股 + 自选股 复用）
   function peLight(pe) {
     if (pe == null || isNaN(pe)) return ["数据缺失", "col-mid", "暂无 PE 数据"];
     if (pe < 15) return ["偏低", "col-low", "PE<15，估值处低位"];
@@ -663,6 +677,81 @@
     if (s >= 3) return ["再观察", "mid", "没有明显便宜，也没有明显危险"];
     return ["谨慎", "high", "估值或位置偏贵，需等业绩或回调验证"];
   }
+  window.buildExamCard = function (a, code) {
+    var name = a[1], price = a[3], chg = a[31], pct = a[32];
+    var pe = parseFloat(a[39]), pb = parseFloat(a[46]), cap = parseFloat(a[44]);
+    var hi52 = parseFloat(a[47]), lo52 = parseFloat(a[48]);
+    var up = parseFloat(chg) >= 0;
+    var cls = up ? "up" : "down";
+    var pos = (hi52 && lo52 && hi52 > lo52) ? (price - lo52) / (hi52 - lo52) * 100 : null;
+    var peL = peLight(pe), pbL = pbLight(pb), posL = posLight(pos);
+    var ov = overall(peL, pbL, posL);
+    var roeHint = (!isNaN(pe) && !isNaN(pb) && pe > 0) ? (pb / pe * 100).toFixed(2) + "%" : "—";
+    return '<div class="quote-card">'
+      + '<div class="quote-top"><span class="quote-name">' + name + '</span><span class="quote-code">' + code.toUpperCase() + '</span></div>'
+      + '<div class="quote-price ' + cls + '">' + price + ' <span class="quote-chg ' + cls + '">' + (up ? "+" : "") + chg + " (" + (up ? "+" : "") + pct + '%)</span></div>'
+      + '<div class="quote-rows">'
+      + '<div class="qrow"><span>市盈率 PE</span><span>' + (isNaN(pe) ? "—" : pe) + '</span></div>'
+      + '<div class="qrow"><span>市净率 PB</span><span>' + (isNaN(pb) ? "—" : pb) + '</span></div>'
+      + '<div class="qrow"><span>总市值</span><span>' + (isNaN(cap) ? "—" : cap + " 亿") + '</span></div>'
+      + '<div class="qrow"><span>52周区间</span><span>' + (lo52 || "—") + " ~ " + (hi52 || "—") + '</span></div>'
+      + '</div>'
+      + (pos != null ? '<div class="pos-bar"><div class="pos-fill" style="width:' + Math.max(2, Math.min(100, pos)) + '%"></div></div>' : '')
+      + '<div class="quote-lights">'
+      + '<div class="ql"><div class="ql-k">PE 灯</div><div class="ql-dot ' + peL[1] + '"></div><div class="ql-v">' + peL[0] + '</div><div class="ql-note">' + peL[2] + '</div></div>'
+      + '<div class="ql"><div class="ql-k">PB 灯</div><div class="ql-dot ' + pbL[1] + '"></div><div class="ql-v">' + pbL[0] + '</div><div class="ql-note">' + pbL[2] + '</div></div>'
+      + '<div class="ql"><div class="ql-k">位置灯</div><div class="ql-dot ' + posL[1] + '"></div><div class="ql-v">' + posL[0] + '</div><div class="ql-note">52周位置 ' + (pos == null ? "—" : pos.toFixed(0) + "%") + '</div></div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="exam-card">'
+      + '<div class="exam-title">🩺 四步个股体检（网页能自动展示的部分）</div>'
+      + '<div class="exam-grid">'
+      + '<div class="exam-step">'
+      + '<div class="exam-step-title">① 估值贵不贵<span class="exam-signal ' + ov[1] + '">' + ov[0] + '</span></div>'
+      + '<div class="exam-step-body">'
+      + 'PE = ' + (isNaN(pe) ? "—" : pe) + ' → ' + peL[0] + '<br>'
+      + 'PB = ' + (isNaN(pb) ? "—" : pb) + ' → ' + pbL[0] + '<br>'
+      + 'PE÷PB 估算 ROE ≈ ' + roeHint
+      + '</div>'
+      + '</div>'
+      + '<div class="exam-step">'
+      + '<div class="exam-step-title">② 基本面硬不硬<span class="exam-signal mid">需查 F10</span></div>'
+      + '<div class="exam-step-body">'
+      + '网页前端拿不到 ROE/负债率/现金流/净利润增速。请打开同花顺 → 个股页 → 简况(F10) → 财务分析，重点看：ROE、资产负债率、经营现金流、净利润同比。'
+      + '</div>'
+      + '</div>'
+      + '<div class="exam-step">'
+      + '<div class="exam-step-title">③ 趋势位置高不高<span class="exam-signal ' + posL[1] + '">' + posL[0] + '</span></div>'
+      + '<div class="exam-step-body">'
+      + '52周位置 = ' + (pos == null ? "—" : pos.toFixed(1) + "%") + '（' + (lo52 || "—") + ' ~ ' + (hi52 || "—") + '）<br>'
+      + (pos == null ? "" : (pos < 30 ? "处于近一年低位区，相对安全。" : (pos > 70 ? "处于近一年高位区，追高风险大。" : "处于中位，没有明显安全边际。")))
+      + '</div>'
+      + '</div>'
+      + '<div class="exam-step">'
+      + '<div class="exam-step-title">④ 业绩有没有拐点<span class="exam-signal mid">需查财报</span></div>'
+      + '<div class="exam-step-body">'
+      + '网页前端拿不到最新季报/中报数据。请在同花顺 F10 → 盈利预测/最新公告里看：最近一期净利润同比增速是否转正或加速，毛利率是否企稳回升。'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="exam-tip">⚠️ 本工具仅覆盖 PE/PB/位置三维速览；ROE、负债率、现金流、业绩拐点等深度基本面需结合 F10 或把代码发给我做完整分析。不同行业 PE/PB 差异极大，仅供学习，不构成任何买卖建议。</div>'
+      + '</div>';
+  };
+})();
+
+(function () {
+  var btn = document.getElementById("quote-btn");
+  var input = document.getElementById("quote-input");
+  var out = document.getElementById("quote-result");
+  if (!btn || !input || !out) return;
+  function norm(code) {
+    code = code.trim().toLowerCase();
+    if (/^(sh|sz|bj)/.test(code)) return code;
+    if (/^6/.test(code)) return "sh" + code;
+    if (/^[03]/.test(code)) return "sz" + code;
+    if (/^8/.test(code)) return "bj" + code;
+    return code;
+  }
   function go() {
     var raw = input.value.trim();
     if (!raw) { out.innerHTML = '<div class="quote-err">请输入 6 位股票代码，如 600519 / 002185</div>'; return; }
@@ -672,69 +761,82 @@
       var m = t.match(/v_(\w+)="([^"]*)"/);
       if (!m) { out.innerHTML = '<div class="quote-err">没查到，代码是否正确？试试 600519</div>'; return; }
       var a = m[2].split("~");
-      var name = a[1], price = a[3], chg = a[31], pct = a[32];
-      var pe = parseFloat(a[39]), pb = parseFloat(a[46]), cap = parseFloat(a[44]);
-      var hi52 = parseFloat(a[47]), lo52 = parseFloat(a[48]);
-      var up = parseFloat(chg) >= 0;
-      var cls = up ? "up" : "down";
-      var pos = (hi52 && lo52 && hi52 > lo52) ? (price - lo52) / (hi52 - lo52) * 100 : null;
-      var peL = peLight(pe), pbL = pbLight(pb), posL = posLight(pos);
-      var ov = overall(peL, pbL, posL);
-      var roeHint = (!isNaN(pe) && !isNaN(pb) && pe > 0) ? (pb / pe * 100).toFixed(2) + "%" : "—";
-      out.innerHTML =
-        '<div class="quote-card">'
-        + '<div class="quote-top"><span class="quote-name">' + name + '</span><span class="quote-code">' + code.toUpperCase() + '</span></div>'
-        + '<div class="quote-price ' + cls + '">' + price + ' <span class="quote-chg ' + cls + '">' + (up ? "+" : "") + chg + " (" + (up ? "+" : "") + pct + '%)</span></div>'
-        + '<div class="quote-rows">'
-        + '<div class="qrow"><span>市盈率 PE</span><span>' + (isNaN(pe) ? "—" : pe) + '</span></div>'
-        + '<div class="qrow"><span>市净率 PB</span><span>' + (isNaN(pb) ? "—" : pb) + '</span></div>'
-        + '<div class="qrow"><span>总市值</span><span>' + (isNaN(cap) ? "—" : cap + " 亿") + '</span></div>'
-        + '<div class="qrow"><span>52周区间</span><span>' + (lo52 || "—") + " ~ " + (hi52 || "—") + '</span></div>'
-        + '</div>'
-        + (pos != null ? '<div class="pos-bar"><div class="pos-fill" style="width:' + Math.max(2, Math.min(100, pos)) + '%"></div></div>' : '')
-        + '<div class="quote-lights">'
-        + '<div class="ql"><div class="ql-k">PE 灯</div><div class="ql-dot ' + peL[1] + '"></div><div class="ql-v">' + peL[0] + '</div><div class="ql-note">' + peL[2] + '</div></div>'
-        + '<div class="ql"><div class="ql-k">PB 灯</div><div class="ql-dot ' + pbL[1] + '"></div><div class="ql-v">' + pbL[0] + '</div><div class="ql-note">' + pbL[2] + '</div></div>'
-        + '<div class="ql"><div class="ql-k">位置灯</div><div class="ql-dot ' + posL[1] + '"></div><div class="ql-v">' + posL[0] + '</div><div class="ql-note">52周位置 ' + (pos == null ? "—" : pos.toFixed(0) + "%") + '</div></div>'
-        + '</div>'
-        + '</div>'
-        + '<div class="exam-card">'
-        + '<div class="exam-title">🩺 四步个股体检（网页能自动展示的部分）</div>'
-        + '<div class="exam-grid">'
-        + '<div class="exam-step">'
-        + '<div class="exam-step-title">① 估值贵不贵<span class="exam-signal ' + ov[1] + '">' + ov[0] + '</span></div>'
-        + '<div class="exam-step-body">'
-        + 'PE = ' + (isNaN(pe) ? "—" : pe) + ' → ' + peL[0] + '<br>'
-        + 'PB = ' + (isNaN(pb) ? "—" : pb) + ' → ' + pbL[0] + '<br>'
-        + 'PE÷PB 估算 ROE ≈ ' + roeHint
-        + '</div>'
-        + '</div>'
-        + '<div class="exam-step">'
-        + '<div class="exam-step-title">② 基本面硬不硬<span class="exam-signal mid">需查 F10</span></div>'
-        + '<div class="exam-step-body">'
-        + '网页前端拿不到 ROE/负债率/现金流/净利润增速。请打开同花顺 → 个股页 → 简况(F10) → 财务分析，重点看：ROE、资产负债率、经营现金流、净利润同比。'
-        + '</div>'
-        + '</div>'
-        + '<div class="exam-step">'
-        + '<div class="exam-step-title">③ 趋势位置高不高<span class="exam-signal ' + posL[1] + '">' + posL[0] + '</span></div>'
-        + '<div class="exam-step-body">'
-        + '52周位置 = ' + (pos == null ? "—" : pos.toFixed(1) + "%") + '（' + (lo52 || "—") + ' ~ ' + (hi52 || "—") + '）<br>'
-        + (pos == null ? "" : (pos < 30 ? "处于近一年低位区，相对安全。" : (pos > 70 ? "处于近一年高位区，追高风险大。" : "处于中位，没有明显安全边际。")))
-        + '</div>'
-        + '</div>'
-        + '<div class="exam-step">'
-        + '<div class="exam-step-title">④ 业绩有没有拐点<span class="exam-signal mid">需查财报</span></div>'
-        + '<div class="exam-step-body">'
-        + '网页前端拿不到最新季报/中报数据。请在同花顺 F10 → 盈利预测/最新公告里看：最近一期净利润同比增速是否转正或加速，毛利率是否企稳回升。'
-        + '</div>'
-        + '</div>'
-        + '</div>'
-        + '<div class="exam-tip">⚠️ 本工具仅覆盖 PE/PB/位置三维速览；ROE、负债率、现金流、业绩拐点等深度基本面需结合 F10 或把代码发给我做完整分析。不同行业 PE/PB 差异极大，仅供学习，不构成任何买卖建议。</div>'
-        + '</div>';
+      out.innerHTML = window.buildExamCard(a, code);
     }).catch(function () { out.innerHTML = '<div class="quote-err">查询失败，请检查网络后重试</div>'; });
   }
   btn.addEventListener("click", go);
   input.addEventListener("keydown", function (e) { if (e.key === "Enter") go(); });
+})();
+
+(function () {
+  // 自选股：本机 localStorage 保存，点开实时拉取四步体检
+  var list = document.getElementById("watch-list");
+  var input = document.getElementById("watch-input");
+  var addBtn = document.getElementById("watch-add");
+  if (!list || !input || !addBtn) return;
+  var KEY = "lwp_watchlist";
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+  function save(arr) { try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch (e) {} }
+  var items = load();
+  if (items.length === 0) { items = ["002185"]; save(items); }
+  function norm(code) {
+    code = code.trim().toLowerCase();
+    if (/^(sh|sz|bj)/.test(code)) return code;
+    if (/^6/.test(code)) return "sh" + code;
+    if (/^[03]/.test(code)) return "sz" + code;
+    if (/^8/.test(code)) return "bj" + code;
+    return code;
+  }
+  function fetchName(code, nameEl) {
+    var n = norm(code);
+    fetch("https://qt.gtimg.cn/q=" + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new TextDecoder("gbk").decode(b); }).then(function (t) {
+      var m = t.match(/v_(\w+)="([^"]*)"/);
+      if (m) { var a = m[2].split("~"); var nm = a[1]; if (nm && nm.indexOf("?") === -1) nameEl.textContent = nm + " · " + code.toUpperCase(); }
+    }).catch(function () {});
+  }
+  function renderItem(code) {
+    var wrap = document.createElement("div");
+    wrap.className = "watch-item collapsed";
+    wrap.innerHTML =
+      '<div class="watch-head"><span class="watch-name">' + code.toUpperCase() + '</span>'
+      + '<span class="watch-sub">点击展开实时体检</span>'
+      + '<span class="watch-del" title="删除">✕</span></div>'
+      + '<div class="watch-body"><div class="quote-loading">点击展开加载…</div></div>';
+    var head = wrap.querySelector(".watch-head");
+    var body = wrap.querySelector(".watch-body");
+    var nameEl = wrap.querySelector(".watch-name");
+    fetchName(code, nameEl);
+    var loaded = false;
+    head.addEventListener("click", function (e) {
+      if (e.target.classList.contains("watch-del")) {
+        items = items.filter(function (c) { return c !== code; });
+        save(items); wrap.remove(); return;
+      }
+      var collapsed = wrap.classList.toggle("collapsed");
+      if (!collapsed && !loaded) {
+        loaded = true;
+        body.innerHTML = '<div class="quote-loading">查询中…</div>';
+        var n = norm(code);
+        fetch("https://qt.gtimg.cn/q=" + n).then(function (r) { return r.arrayBuffer(); }).then(function (b) { return new TextDecoder("gbk").decode(b); }).then(function (t) {
+          var m = t.match(/v_(\w+)="([^"]*)"/);
+          if (!m) { body.innerHTML = '<div class="quote-err">没查到</div>'; return; }
+          var a = m[2].split("~");
+          body.innerHTML = window.buildExamCard(a, n);
+        }).catch(function () { body.innerHTML = '<div class="quote-err">查询失败</div>'; });
+      }
+    });
+    list.appendChild(wrap);
+  }
+  items.forEach(renderItem);
+  addBtn.addEventListener("click", function () {
+    var raw = input.value.trim();
+    if (!raw) return;
+    var n = norm(raw);
+    var code6 = n.replace(/^(sh|sz|bj)/, "");
+    if (items.indexOf(code6) === -1) { items.push(code6); save(items); renderItem(code6); }
+    input.value = "";
+  });
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") addBtn.click(); });
 })();
 
 (function () {
