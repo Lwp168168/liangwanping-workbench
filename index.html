@@ -78,9 +78,10 @@
   .greeting-text b { color: var(--ink); }
   .greeting-pill { background: var(--brand-soft); color: var(--brand); font-size: 12px; padding: 5px 12px; border-radius: 999px; font-weight: 600; }
 
-  .nav-pills { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 8px; margin-bottom: 6px; scrollbar-width: none; }
+  .nav-pills-wrap { position: sticky; top: 0; z-index: 20; background: var(--bg); padding: 8px 0; margin: 0 -16px 6px; }
+  .nav-pills { display: flex; gap: 8px; overflow-x: auto; padding: 2px 16px 8px; scrollbar-width: none; }
   .nav-pills::-webkit-scrollbar { display: none; }
-  .pill { flex: 0 0 auto; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--card); color: var(--ink-2); text-decoration: none; box-shadow: var(--shadow); display: flex; align-items: center; gap: 6px; }
+  .pill { flex: 0 0 auto; padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; background: var(--card); color: var(--ink-2); text-decoration: none; box-shadow: var(--shadow); display: flex; align-items: center; gap: 6px; cursor: pointer; }
   .pill.active { background: var(--ink); color: #fff; }
 
   .disclaimer { background: var(--amber-soft); color: #92400e; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; margin: 10px 0 14px; display: flex; gap: 8px; align-items: flex-start; }
@@ -324,14 +325,16 @@
         <div class="greeting-pill" id="greeting-pill">黄灯</div>
       </div>
 
-      <nav class="nav-pills">
-        <a class="pill active" href="#section-today">📌 今日</a>
-        <a class="pill" href="#section-market">📊 行情</a>
-        <a class="pill" href="#section-valuation">🌡 估值</a>
-        <a class="pill" href="#section-class">📚 课堂</a>
-        <a class="pill" href="#section-quote">🔍 查股</a>
-        <a class="pill" href="#section-watch">⭐ 自选</a>
-      </nav>
+      <div class="nav-pills-wrap">
+        <nav class="nav-pills">
+          <a class="pill active" href="#section-today" data-target="section-today">📌 今日</a>
+          <a class="pill" href="#section-market" data-target="section-market">📊 行情</a>
+          <a class="pill" href="#section-valuation" data-target="section-valuation">🌡 估值</a>
+          <a class="pill" href="#section-class" data-target="section-class">📚 课堂</a>
+          <a class="pill" href="#section-quote" data-target="section-quote">🔍 查股</a>
+          <a class="pill" href="#section-watch" data-target="section-watch">⭐ 自选</a>
+        </nav>
+      </div>
 
       <div class="disclaimer"><b>⚠️ 风险提示</b><span id="disclaimer-text"></span></div>
 
@@ -893,6 +896,43 @@
       caret.textContent = collapsed ? "▸ 展开" : "▾ 收起";
     });
   });
+})();
+
+(function () {
+  var wrap = document.querySelector(".nav-pills-wrap");
+  var pills = document.querySelectorAll(".nav-pills .pill");
+  function setActive(id) {
+    pills.forEach(function (p) {
+      p.classList.toggle("active", p.getAttribute("data-target") === id);
+    });
+  }
+  function scrollTo(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var offset = wrap ? wrap.offsetHeight + 8 : 56;
+    var y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    setActive(id);
+  }
+  pills.forEach(function (p) {
+    p.addEventListener("click", function (e) {
+      e.preventDefault();
+      scrollTo(p.getAttribute("data-target"));
+    });
+  });
+  // 滚动时自动高亮当前所在栏目
+  var sections = ["section-today", "section-market", "section-valuation", "section-class", "section-quote", "section-watch"];
+  function onScroll() {
+    var offset = wrap ? wrap.offsetHeight + 8 : 56;
+    var activeId = sections[0];
+    sections.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= offset) activeId = id;
+    });
+    setActive(activeId);
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 })();
 
 document.querySelectorAll(".nav-item").forEach(function (btn) {
