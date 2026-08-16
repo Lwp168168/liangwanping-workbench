@@ -468,7 +468,7 @@
           <button class="quote-btn" id="watch-add">添加</button>
         </div>
         <div id="watch-list"></div>
-        <div class="watch-note">自选股保存在你本机浏览器（localStorage），换设备 / 清缓存会丢失。点任意一只展开看 PE/PB/位置灯 + 四步体检；深度基本面仍需同花顺 F10 或把代码发给我做完整分析。仅作学习，不构成任何买卖建议。</div>
+        <div class="watch-note">自选股保存在你本机浏览器（localStorage），换设备 / 清缓存会丢失。已固化同花顺基本面的自选股（如华天科技 002185）点开直接展示四步完整分析（PE/PB/位置灯 + ROE/负债率/现金流/净利增速/毛利率）；其它股票先显示速览，深度基本面请查 F10 或把代码发我写进卡片。仅作学习，不构成任何买卖建议。</div>
       </section>
 
       <footer id="footer"></footer>
@@ -487,9 +487,10 @@
 
 <button class="fab" id="fab" title="回到顶部">↑</button>
 
-<script src="content.js"></script>
+  <script src="content.js"></script>
   <script src="valuation.js"></script>
   <script src="sectors.js"></script>
+  <script src="analysis.js"></script>
 <script>
 (function () {
   var C = window.CONTENT;
@@ -677,7 +678,7 @@
     if (s >= 3) return ["再观察", "mid", "没有明显便宜，也没有明显危险"];
     return ["谨慎", "high", "估值或位置偏贵，需等业绩或回调验证"];
   }
-  window.buildExamCard = function (a, code) {
+  window.buildExamCard = function (a, code, analysis) {
     var name = a[1], price = a[3], chg = a[31], pct = a[32];
     var pe = parseFloat(a[39]), pb = parseFloat(a[46]), cap = parseFloat(a[44]);
     var hi52 = parseFloat(a[47]), lo52 = parseFloat(a[48]);
@@ -687,7 +688,8 @@
     var peL = peLight(pe), pbL = pbLight(pb), posL = posLight(pos);
     var ov = overall(peL, pbL, posL);
     var roeHint = (!isNaN(pe) && !isNaN(pb) && pe > 0) ? (pb / pe * 100).toFixed(2) + "%" : "—";
-    return '<div class="quote-card">'
+    var hasA = analysis && typeof analysis === "object";
+    var h = '<div class="quote-card">'
       + '<div class="quote-top"><span class="quote-name">' + name + '</span><span class="quote-code">' + code.toUpperCase() + '</span></div>'
       + '<div class="quote-price ' + cls + '">' + price + ' <span class="quote-chg ' + cls + '">' + (up ? "+" : "") + chg + " (" + (up ? "+" : "") + pct + '%)</span></div>'
       + '<div class="quote-rows">'
@@ -704,38 +706,72 @@
       + '</div>'
       + '</div>'
       + '<div class="exam-card">'
-      + '<div class="exam-title">🩺 四步个股体检（网页能自动展示的部分）</div>'
-      + '<div class="exam-grid">'
-      + '<div class="exam-step">'
+      + '<div class="exam-title">🩺 四步个股体检' + (hasA ? '（含同花顺固化基本面）' : '（网页能自动展示的部分）') + '</div>'
+      + '<div class="exam-grid">';
+    // ① 估值贵不贵
+    h += '<div class="exam-step">'
       + '<div class="exam-step-title">① 估值贵不贵<span class="exam-signal ' + ov[1] + '">' + ov[0] + '</span></div>'
       + '<div class="exam-step-body">'
       + 'PE = ' + (isNaN(pe) ? "—" : pe) + ' → ' + peL[0] + '<br>'
-      + 'PB = ' + (isNaN(pb) ? "—" : pb) + ' → ' + pbL[0] + '<br>'
-      + 'PE÷PB 估算 ROE ≈ ' + roeHint
-      + '</div>'
-      + '</div>'
-      + '<div class="exam-step">'
-      + '<div class="exam-step-title">② 基本面硬不硬<span class="exam-signal mid">需查 F10</span></div>'
-      + '<div class="exam-step-body">'
-      + '网页前端拿不到 ROE/负债率/现金流/净利润增速。请打开同花顺 → 个股页 → 简况(F10) → 财务分析，重点看：ROE、资产负债率、经营现金流、净利润同比。'
-      + '</div>'
-      + '</div>'
-      + '<div class="exam-step">'
+      + 'PB = ' + (isNaN(pb) ? "—" : pb) + ' → ' + pbL[0];
+    if (hasA && analysis.pePercentile != null) {
+      h += '<br>近1年PE分位 ' + analysis.pePercentile + '% → ' + (analysis.pePercentile >= 70 ? '偏贵' : (analysis.pePercentile >= 30 ? '适中' : '偏低'));
+    }
+    if (hasA && analysis.roe != null) {
+      h += '<br>真实ROE(年报) ' + analysis.roe + '%';
+    } else {
+      h += '<br>PE÷PB 估算 ROE ≈ ' + roeHint;
+    }
+    h += '</div></div>';
+    // ② 基本面硬不硬
+    if (hasA) {
+      var fundSig = analysis.roe >= 10 ? 'low' : (analysis.roe >= 5 ? 'mid' : 'high');
+      var fundTxt = analysis.roe >= 10 ? '较强' : (analysis.roe >= 5 ? '中等' : '偏弱');
+      h += '<div class="exam-step">'
+        + '<div class="exam-step-title">② 基本面硬不硬<span class="exam-signal ' + fundSig + '">' + fundTxt + '</span></div>'
+        + '<div class="exam-step-body">'
+        + 'ROE(年报) ' + analysis.roe + '% · 一季报 ' + (analysis.roeQ != null ? analysis.roeQ + '%' : '—') + (analysis.roeQNote ? '（' + analysis.roeQNote + '）' : '') + '<br>'
+        + '资产负债率 ' + analysis.debtRatio + '%<br>'
+        + '每股经营现金流 ' + (analysis.opCashFlowPS != null ? analysis.opCashFlowPS + ' 元' : '—') + '<br>'
+        + '净利润增速 一季报 +' + analysis.netProfitGrowth + '% / 年报 +' + analysis.netProfitGrowthAnnual + '%<br>'
+        + '毛利率 一季报 ' + analysis.grossMargin + '% / 年报 ' + analysis.grossMarginAnnual + '%'
+        + '</div></div>';
+    } else {
+      h += '<div class="exam-step">'
+        + '<div class="exam-step-title">② 基本面硬不硬<span class="exam-signal mid">需查 F10</span></div>'
+        + '<div class="exam-step-body">网页前端拿不到 ROE/负债率/现金流/净利润增速。请打开同花顺 → 个股页 → 简况(F10) → 财务分析，重点看：ROE、资产负债率、经营现金流、净利润同比。未固化的自选股可把代码发给我，我帮你拉同花顺数据写进卡片。</div>'
+        + '</div>';
+    }
+    // ③ 趋势位置高不高
+    h += '<div class="exam-step">'
       + '<div class="exam-step-title">③ 趋势位置高不高<span class="exam-signal ' + posL[1] + '">' + posL[0] + '</span></div>'
       + '<div class="exam-step-body">'
       + '52周位置 = ' + (pos == null ? "—" : pos.toFixed(1) + "%") + '（' + (lo52 || "—") + ' ~ ' + (hi52 || "—") + '）<br>'
       + (pos == null ? "" : (pos < 30 ? "处于近一年低位区，相对安全。" : (pos > 70 ? "处于近一年高位区，追高风险大。" : "处于中位，没有明显安全边际。")))
-      + '</div>'
-      + '</div>'
-      + '<div class="exam-step">'
-      + '<div class="exam-step-title">④ 业绩有没有拐点<span class="exam-signal mid">需查财报</span></div>'
-      + '<div class="exam-step-body">'
-      + '网页前端拿不到最新季报/中报数据。请在同花顺 F10 → 盈利预测/最新公告里看：最近一期净利润同比增速是否转正或加速，毛利率是否企稳回升。'
-      + '</div>'
-      + '</div>'
-      + '</div>'
-      + '<div class="exam-tip">⚠️ 本工具仅覆盖 PE/PB/位置三维速览；ROE、负债率、现金流、业绩拐点等深度基本面需结合 F10 或把代码发给我做完整分析。不同行业 PE/PB 差异极大，仅供学习，不构成任何买卖建议。</div>'
+      + (hasA && analysis.industry ? '<br>行业：' + analysis.industry : '')
+      + '</div></div>';
+    // ④ 业绩有没有拐点
+    if (hasA) {
+      var earnSig = analysis.netProfitGrowth >= 30 ? 'low' : 'mid';
+      var earnTxt = analysis.netProfitGrowth >= 30 ? '拐点向上' : '待观察';
+      h += '<div class="exam-step">'
+        + '<div class="exam-step-title">④ 业绩有没有拐点<span class="exam-signal ' + earnSig + '">' + earnTxt + '</span></div>'
+        + '<div class="exam-step-body">'
+        + '一季报净利润 +' + analysis.netProfitGrowth + '%（' + (analysis.netProfitGrowthNote || '同比') + '）<br>'
+        + '毛利率 ' + analysis.grossMargin + '%（较去年同期回升）<br>'
+        + '最新报告期 ' + analysis.reportDate
+        + (analysis.watchNote ? '<br>⏰ ' + analysis.watchNote : '')
+        + '</div></div>';
+    } else {
+      h += '<div class="exam-step">'
+        + '<div class="exam-step-title">④ 业绩有没有拐点<span class="exam-signal mid">需查财报</span></div>'
+        + '<div class="exam-step-body">网页前端拿不到最新季报/中报数据。请在同花顺 F10 → 盈利预测/最新公告里看：最近一期净利润同比增速是否转正或加速，毛利率是否企稳回升。</div>'
+        + '</div>';
+    }
+    h += '</div>'
+      + '<div class="exam-tip">⚠️ 基本面数据来自同花顺 F10（固化快照，季报披露后更新）；PE/PB/价格/52周位置为实时腾讯行情。不同行业 PE/PB 差异极大，仅供学习，不构成任何买卖建议。</div>'
       + '</div>';
+    return h;
   };
 })();
 
@@ -761,7 +797,7 @@
       var m = t.match(/v_(\w+)="([^"]*)"/);
       if (!m) { out.innerHTML = '<div class="quote-err">没查到，代码是否正确？试试 600519</div>'; return; }
       var a = m[2].split("~");
-      out.innerHTML = window.buildExamCard(a, code);
+      out.innerHTML = window.buildExamCard(a, code, window.ANALYSIS ? window.ANALYSIS[code.replace(/^(sh|sz|bj)/, "")] : null);
     }).catch(function () { out.innerHTML = '<div class="quote-err">查询失败，请检查网络后重试</div>'; });
   }
   btn.addEventListener("click", go);
@@ -821,7 +857,7 @@
           var m = t.match(/v_(\w+)="([^"]*)"/);
           if (!m) { body.innerHTML = '<div class="quote-err">没查到</div>'; return; }
           var a = m[2].split("~");
-          body.innerHTML = window.buildExamCard(a, n);
+          body.innerHTML = window.buildExamCard(a, n, window.ANALYSIS ? window.ANALYSIS[n.replace(/^(sh|sz|bj)/, "")] : null);
         }).catch(function () { body.innerHTML = '<div class="quote-err">查询失败</div>'; });
       }
     });
