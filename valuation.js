@@ -1,6 +1,6 @@
 // 指数估值体检（由 fetch_val.py 自动生成，勿手改）
 window.VALUATION = {
-  "updated": "2026-08-15 08:21",
+  "updated": "2026-08-16 08:23",
   "items": [
     {
       "name": "沪深300",
