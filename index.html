@@ -218,6 +218,18 @@
   .pos-fill { height: 100%; background: linear-gradient(90deg, #18a957, #d97706, #c8161e); }
   .quote-tip { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 8px; }
   .quote-err, .quote-loading { font-size: 13px; color: var(--ink-3); padding: 10px; text-align: center; }
+  /* 股票课堂 */
+  .knowledge-list { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .knowledge-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
+  .knowledge-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .knowledge-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex: 0 0 34px; }
+  .knowledge-title { font-size: 15px; font-weight: 700; }
+  .knowledge-formula { background: var(--bg); border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+  .knowledge-text { font-size: 13px; color: #374151; line-height: 1.7; margin-bottom: 10px; }
+  .scale-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+  .scale-table th, .scale-table td { padding: 6px 8px; border: 1px solid var(--line); text-align: left; }
+  .scale-table th { background: var(--bg); color: var(--ink-2); font-weight: 600; }
+  .knowledge-tip { background: var(--amber-soft); border-radius: 10px; padding: 10px 12px; font-size: 12px; color: #92400e; line-height: 1.7; margin-top: 12px; }
   @media (max-width: 640px){ .board-list { grid-template-columns: 1fr; } }
 
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
@@ -282,6 +294,7 @@
         <a class="pill active" href="#section-today">📌 今日</a>
         <a class="pill" href="#section-market">📊 行情</a>
         <a class="pill" href="#section-valuation">🌡 估值</a>
+        <a class="pill" href="#section-class">📚 课堂</a>
         <a class="pill" href="#section-quote">🔍 查股</a>
       </nav>
 
@@ -334,6 +347,68 @@
         </div>
         <div class="board-list" id="board-list"></div>
         <div class="board-note" id="board-note"></div>
+      </section>
+
+      <section id="section-class" class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--amber-soft)">📚</span>股票课堂 · 常忘记就回来看</div>
+          <div class="sec-meta">常驻知识卡</div>
+        </div>
+        <div class="knowledge-list">
+          <div class="knowledge-card">
+            <div class="knowledge-head">
+              <div class="knowledge-icon" style="background:var(--blue-soft);color:var(--blue)">PE</div>
+              <div class="knowledge-title">市盈率：多少年能回本</div>
+            </div>
+            <div class="knowledge-formula">PE = 股价 ÷ 每股收益</div>
+            <div class="knowledge-text">
+              每股每年帮你赚 1 元，股价 20 元，PE = 20，即按当前赚钱速度要 20 年回本。PE 越高，市场越“赌”它未来利润大幅增长。
+            </div>
+            <table class="scale-table">
+              <tr><th>PE</th><th>信号</th></tr>
+              <tr><td>&lt; 15</td><td>偏低</td></tr>
+              <tr><td>15 ~ 30</td><td>合理</td></tr>
+              <tr><td>30 ~ 50</td><td>偏高</td></tr>
+              <tr><td>&gt; 50</td><td>偏贵</td></tr>
+            </table>
+          </div>
+          <div class="knowledge-card">
+            <div class="knowledge-head">
+              <div class="knowledge-icon" style="background:var(--green-soft);color:var(--green)">PB</div>
+              <div class="knowledge-title">市净率：为“账面家底”付了几倍</div>
+            </div>
+            <div class="knowledge-formula">PB = 股价 ÷ 每股净资产</div>
+            <div class="knowledge-text">
+              每股净资产是公司清算时股东能分到的家底。PB = 1 表示股价刚好等于家底；PB &gt; 3 说明市场为它支付了“无形资产”溢价，如技术、品牌、未来赚钱能力。
+            </div>
+            <table class="scale-table">
+              <tr><th>PB</th><th>信号</th></tr>
+              <tr><td>&lt; 1</td><td>破净，股价低于净资产</td></tr>
+              <tr><td>1 ~ 3</td><td>正常</td></tr>
+              <tr><td>&gt; 3</td><td>偏高</td></tr>
+            </table>
+          </div>
+          <div class="knowledge-card">
+            <div class="knowledge-head">
+              <div class="knowledge-icon" style="background:var(--purple-soft);color:var(--purple)">ROE</div>
+              <div class="knowledge-title">净资产收益率：股东的钱赚多少</div>
+            </div>
+            <div class="knowledge-formula">ROE = 净利润 ÷ 净资产 = 每股收益 ÷ 每股净资产</div>
+            <div class="knowledge-text">
+              ROE 越高，说明公司用股东的钱越会赚钱。长期 &gt; 15% 通常算优秀。ROE 低而 PE 高，利润薄会把 PE 撑得很高。
+            </div>
+            <table class="scale-table">
+              <tr><th>ROE</th><th>信号</th></tr>
+              <tr><td>&lt; 5%</td><td>偏弱</td></tr>
+              <tr><td>5% ~ 10%</td><td>及格</td></tr>
+              <tr><td>10% ~ 15%</td><td>良好</td></tr>
+              <tr><td>&gt; 15%</td><td>优秀</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="knowledge-tip">
+          <b>记忆小抄：</b>PE 看“回本年限”，PB 看“家底溢价”，ROE 看“赚钱效率”。三者有关系：PE ÷ PB = 1 ÷ ROE。估值贵不贵、质地好不好，要三个一起看。
+        </div>
       </section>
 
       <section id="section-quote" class="section">
