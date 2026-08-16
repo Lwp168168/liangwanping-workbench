@@ -176,11 +176,19 @@
   .board-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
   .board-meta { font-size: 11px; color: var(--ink-3); }
   .board-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 14px; }
-  .board-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 10px; background: var(--bg); font-size: 13px; }
+  .board-item { display: flex; flex-direction: column; gap: 5px; padding: 8px 10px; border-radius: 10px; background: var(--bg); font-size: 13px; }
+  .board-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .board-name { font-weight: 600; }
+  .board-code { font-size: 10px; color: var(--ink-3); font-weight: 500; margin-left: 5px; }
   .board-chg { font-weight: 700; font-variant-numeric: tabular-nums; }
   .board-chg.up { color: #c8161e; }
   .board-chg.down { color: #18a957; }
+  .board-leaders { font-size: 11px; color: var(--ink-3); line-height: 1.5; }
+  .board-leaders b { color: var(--ink-2); font-weight: 600; margin-left: 2px; }
+  .ltag { display: inline-block; font-size: 9px; font-style: normal; font-weight: 600; color: #8a6d3b; background: #f3ead8; border-radius: 5px; padding: 0 4px; margin-left: 4px; }
+  .lchg { font-weight: 700; margin-left: 3px; font-variant-numeric: tabular-nums; }
+  .lchg.up { color: #c8161e; }
+  .lchg.down { color: #18a957; }
   .board-note { font-size: 11px; color: var(--ink-3); margin-top: 10px; line-height: 1.6; }
   @media (max-width: 640px){ .board-list { grid-template-columns: 1fr; } }
 
@@ -377,6 +385,7 @@
       + '</div></div>'
       + '<div class="c-card-detail">' + c.detail + '</div>'
       + '<div class="hint">点击展开详情 ↓</div>';
+    div.classList.add("open");
     div.addEventListener("click", function () { div.classList.toggle("open"); });
     grid.appendChild(div);
   });
@@ -427,8 +436,18 @@
     var d = document.createElement("div");
     d.className = "board-item";
     var up = b.chg >= 0;
-    d.innerHTML = '<span class="board-name">' + b.name + '</span>'
-      + '<span class="board-chg ' + (up ? "up" : "down") + '">' + (up ? "+" : "") + b.chg + '%</span>';
+    var row = '<div class="board-row"><span class="board-name">' + b.name
+      + '<span class="board-code">' + b.code + '</span></span>'
+      + '<span class="board-chg ' + (up ? "up" : "down") + '">' + (up ? "+" : "") + b.chg + '%</span></div>';
+    var lead = "";
+    if (b.leaders && b.leaders.length) {
+      lead = '<div class="board-leaders">代表股：' + b.leaders.map(function (l) {
+        var tag = l.tag ? '<i class="ltag">' + l.tag + '</i>' : '';
+        var chg = (l.chg == null) ? '' : ' <b class="lchg ' + (l.chg >= 0 ? "up" : "down") + '">' + (l.chg >= 0 ? "+" : "") + l.chg + '%</b>';
+        return l.name + '<b>' + l.code + '</b>' + tag + chg;
+      }).join(" · ") + '</div>';
+    }
+    d.innerHTML = row + lead;
     list.appendChild(d);
   });
 })();
