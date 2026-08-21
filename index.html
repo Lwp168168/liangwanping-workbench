@@ -4,6 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>凉丸瓶工作台 · 平民股票基金每日一学</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#c8161e" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="凉丸瓶" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
 <style>
   :root {
     --bg: #f5f6fa;
@@ -584,6 +591,13 @@
   <script src="sectors.js"></script>
   <script src="analysis.js"></script>
 <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+<script>
 (function () {
   var C = window.CONTENT;
   if (!C || !C.daily || !C.daily.length) return;
@@ -642,7 +656,6 @@
       + '</div></div>'
       + '<div class="c-card-detail">' + c.detail + '</div>'
       + '<div class="hint">点击展开详情 ↓</div>';
-    div.classList.add("open");
     div.addEventListener("click", function () { div.classList.toggle("open"); });
     grid.appendChild(div);
   });
