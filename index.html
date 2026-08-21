@@ -176,7 +176,11 @@
   /* 自媒体模块 */
   .media-persona { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; }
   .mp-role { font-size: 14px; font-weight: 700; color: var(--ink); }
-  .mp-summary { font-size: 13px; color: var(--ink-2); margin-top: 8px; line-height: 1.8; white-space: pre-line; }
+  .mp-account { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  .mp-stats { font-size: 12px; color: var(--ink-2); margin-top: 6px; }
+  .mp-stats span { display: inline-block; background: var(--tag); padding: 3px 8px; border-radius: 12px; margin-right: 6px; margin-bottom: 4px; }
+  .mp-baseline { font-size: 12px; color: var(--ink-3); margin-top: 6px; font-style: italic; }
+  .mp-summary { font-size: 13px; color: var(--ink-2); margin-top: 10px; line-height: 1.8; white-space: pre-line; }
   .mp-rules { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
   .mp-rule-title { font-size: 12px; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; }
   .mp-rules ul { list-style: none; }
@@ -295,6 +299,40 @@
   .collapsible.collapsed > .board-note { display: none; }
   @media (max-width: 640px){ .board-list { grid-template-columns: 1fr; } }
   @media (max-width: 640px){ .exam-grid { grid-template-columns: 1fr; } }
+
+  /* 自媒体创作工作台：拍摄计划 / 数据记录 / 作品追踪 */
+  .plan-form, .stat-form, .post-form { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .mini-input { flex: 1; min-width: 88px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; font-size: 13px; background: var(--bg); color: var(--ink); }
+  .mini-input:focus { outline: none; border-color: var(--purple); }
+  .mini-btn { padding: 9px 16px; border: none; border-radius: 10px; background: var(--purple); color: #fff; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .mini-btn:active { transform: scale(.97); }
+  .plan-grid { display: flex; flex-direction: column; gap: 8px; }
+  .plan-row { display: flex; align-items: center; gap: 10px; background: var(--bg); border-radius: 12px; padding: 10px 12px; }
+  .plan-day { font-weight: 700; font-size: 13px; width: 36px; flex: 0 0 36px; }
+  .plan-topic { flex: 1; font-size: 13px; color: var(--ink); }
+  .plan-topic.empty { color: var(--ink-3); }
+  .plan-status { font-size: 11px; padding: 4px 10px; border-radius: 999px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .st-todo { background: var(--card); color: var(--ink-3); border: 1px solid var(--line); }
+  .st-shot { background: var(--amber-soft); color: var(--amber); }
+  .st-posted { background: var(--green-soft); color: var(--green); }
+  .plan-del, .post-del { color: var(--ink-3); cursor: pointer; padding: 2px 6px; font-size: 13px; }
+  .plan-del:hover, .post-del:hover { color: var(--brand); }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 6px; }
+  .stat-box { flex: 1; background: var(--bg); border-radius: 12px; padding: 12px; text-align: center; }
+  .stat-box .v { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .stat-box .k { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .stat-box .d { font-size: 11px; margin-top: 3px; font-weight: 600; }
+  .d-up { color: var(--green); }
+  .d-down { color: var(--brand); }
+  .spark { width: 100%; height: 46px; margin: 4px 0 2px; display: block; }
+  .post-item { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .post-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .post-title { font-weight: 700; font-size: 14px; }
+  .post-meta { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+  .post-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+  .post-metrics > div { background: var(--bg); border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 11px; color: var(--ink-2); }
+  .post-metrics b { display: block; font-size: 15px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .media-hint { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 8px; }
 
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
 
@@ -622,6 +660,62 @@
           <div class="sec-meta" id="media-script-count"></div>
         </div>
         <div id="media-scripts"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">📅</span>本周拍摄计划</div>
+          <div class="sec-meta">点状态切换</div>
+        </div>
+        <div class="plan-form">
+          <select class="mini-input" id="plan-day" style="flex:0 0 92px">
+            <option value="周一">周一</option>
+            <option value="周二">周二</option>
+            <option value="周三">周三</option>
+            <option value="周四">周四</option>
+            <option value="周五">周五</option>
+            <option value="周六">周六</option>
+            <option value="周日">周日</option>
+          </select>
+          <input class="mini-input" id="plan-topic" placeholder="计划拍什么，如「发货前退款差在哪」" />
+          <button class="mini-btn" id="plan-add">设定</button>
+        </div>
+        <div class="plan-grid" id="plan-grid"></div>
+        <div class="media-hint">点右侧状态可在「未拍 → 已拍 → 已发」间循环；✕ 清空当天。数据存在你本机浏览器。</div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">📊</span>我的数据</div>
+          <div class="sec-meta">定期记一下</div>
+        </div>
+        <div class="stat-form">
+          <input class="mini-input" id="stat-fans" type="number" inputmode="numeric" placeholder="粉丝数" />
+          <input class="mini-input" id="stat-views" type="number" inputmode="numeric" placeholder="总播放" />
+          <button class="mini-btn" id="stat-add">记录今天</button>
+        </div>
+        <div class="stat-row" id="stat-row"></div>
+        <svg class="spark" id="stat-spark" viewBox="0 0 300 46" preserveAspectRatio="none"></svg>
+        <div class="media-hint" id="stat-recent"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--green-soft)">🎬</span>已发布作品</div>
+          <div class="sec-meta">发一条记一条</div>
+        </div>
+        <div class="post-form">
+          <input class="mini-input" id="post-date" type="date" style="flex:0 0 130px" />
+          <input class="mini-input" id="post-title" placeholder="视频标题" style="flex:2;min-width:140px" />
+        </div>
+        <div class="post-form">
+          <input class="mini-input" id="post-plays" type="number" inputmode="numeric" placeholder="播放" />
+          <input class="mini-input" id="post-likes" type="number" inputmode="numeric" placeholder="赞" />
+          <input class="mini-input" id="post-fans" type="number" inputmode="numeric" placeholder="涨粉" />
+          <button class="mini-btn" id="post-add">记录</button>
+        </div>
+        <div id="post-list"></div>
+        <div class="media-hint">记录后能看到每条视频的播放/赞/涨粉，方便你复盘哪类内容更受欢迎。仅你自己可见。</div>
       </section>
 
       <footer id="media-footer"></footer>
@@ -1115,6 +1209,9 @@ document.getElementById("fab").addEventListener("click", function () {
     var rules = (p.rules || []).map(function (r) { return '<li>' + r + '</li>'; }).join('');
     document.getElementById('media-persona').innerHTML =
       '<div class="mp-role">' + p.role + '</div>'
+      + (p.account ? '<div class="mp-account">' + p.account + '</div>' : '')
+      + (p.stats ? '<div class="mp-stats">' + p.stats.split(' · ').map(function(s){ return '<span>'+s+'</span>'; }).join('') + '</div>' : '')
+      + (p.baseline ? '<div class="mp-baseline">' + p.baseline + '</div>' : '')
       + '<div class="mp-summary">' + p.summary + '</div>'
       + '<div class="mp-rules"><div class="mp-rule-title">四条原则</div><ul>' + rules + '</ul></div>';
   }
@@ -1147,6 +1244,154 @@ document.getElementById("fab").addEventListener("click", function () {
   });
   var f = document.getElementById('media-footer');
   if (f) f.innerHTML = '自媒体模块 · 内容更新于 ' + (M.lastUpdated || '') + ' · 只做真实记录，不教人搞钱';
+})();
+
+(function () {
+  // 自媒体 · 本周拍摄计划（localStorage）
+  var KEY = "lwp_media_plan";
+  var DAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+  var grid = document.getElementById("plan-grid");
+  var daySel = document.getElementById("plan-day");
+  var topicIn = document.getElementById("plan-topic");
+  if (!grid || !daySel || !topicIn) return;
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+  var data = load();
+  DAYS.forEach(function (d) { if (!data[d]) data[d] = { topic: "", status: "todo" }; });
+  var statusText = { todo: "未拍", shot: "已拍", posted: "已发" };
+  function render() {
+    grid.innerHTML = "";
+    DAYS.forEach(function (d) {
+      var it = data[d];
+      var row = document.createElement("div");
+      row.className = "plan-row";
+      row.innerHTML = '<div class="plan-day">' + d + '</div>'
+        + '<div class="plan-topic' + (it.topic ? "" : " empty") + '">' + (it.topic || "（空闲）") + '</div>'
+        + '<span class="plan-status st-' + it.status + '" data-d="' + d + '">' + statusText[it.status] + '</span>'
+        + '<span class="plan-del" data-d="' + d + '" title="清空">✕</span>';
+      grid.appendChild(row);
+    });
+  }
+  render();
+  document.getElementById("plan-add").addEventListener("click", function () {
+    var d = daySel.value, t = topicIn.value.trim();
+    if (!t) { topicIn.focus(); return; }
+    data[d] = { topic: t, status: "todo" }; save(data); render(); topicIn.value = "";
+  });
+  grid.addEventListener("click", function (e) {
+    var st = e.target.closest(".plan-status");
+    var del = e.target.closest(".plan-del");
+    if (st) {
+      var d = st.getAttribute("data-d");
+      var order = ["todo", "shot", "posted"];
+      data[d].status = order[(order.indexOf(data[d].status) + 1) % 3];
+      save(data); render();
+    } else if (del) {
+      var d2 = del.getAttribute("data-d");
+      data[d2] = { topic: "", status: "todo" }; save(data); render();
+    }
+  });
+})();
+
+(function () {
+  // 自媒体 · 我的数据（粉丝/播放记录 + 趋势）
+  var KEY = "lwp_media_stats";
+  var fansIn = document.getElementById("stat-fans");
+  var viewsIn = document.getElementById("stat-views");
+  var row = document.getElementById("stat-row");
+  var spark = document.getElementById("stat-spark");
+  var recent = document.getElementById("stat-recent");
+  if (!fansIn || !viewsIn || !row) return;
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+  function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function delta(cur, old) {
+    if (old == null) return '<div class="d">—</div>';
+    var diff = cur - old;
+    if (diff === 0) return '<div class="d">—</div>';
+    return '<div class="d ' + (diff > 0 ? "d-up" : "d-down") + '">' + (diff > 0 ? "▲ +" : "▼ ") + diff + '</div>';
+  }
+  function drawSpark(vals) {
+    if (!vals.length) { spark.innerHTML = ""; return; }
+    var W = 300, H = 46, pad = 4;
+    var min = Math.min.apply(null, vals), max = Math.max.apply(null, vals);
+    var range = (max - min) || 1, n = vals.length;
+    var pts = vals.map(function (v, i) {
+      var x = n === 1 ? W / 2 : pad + i * (W - 2 * pad) / (n - 1);
+      var y = H - pad - (v - min) / range * (H - 2 * pad);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+    spark.innerHTML = '<polyline points="' + pts.join(" ") + '" fill="none" stroke="#7c5cf3" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+  }
+  function render() {
+    var arr = load();
+    if (arr.length === 0) {
+      row.innerHTML = '<div class="stat-box"><div class="v">—</div><div class="k">粉丝</div></div><div class="stat-box"><div class="v">—</div><div class="k">总播放</div></div>';
+      spark.innerHTML = ""; recent.innerHTML = "还没有记录，记一次就有趋势了";
+      return;
+    }
+    var last = arr[arr.length - 1], prev = arr.length > 1 ? arr[arr.length - 2] : null;
+    row.innerHTML = '<div class="stat-box"><div class="v">' + last.fans + '</div><div class="k">粉丝</div>' + delta(last.fans, prev ? prev.fans : null) + '</div>'
+      + '<div class="stat-box"><div class="v">' + last.views + '</div><div class="k">总播放</div>' + delta(last.views, prev ? prev.views : null) + '</div>';
+    drawSpark(arr.map(function (x) { return x.fans; }));
+    recent.innerHTML = arr.slice(-6).reverse().map(function (x) {
+      return '<div><span>' + x.date + '</span><span>粉 ' + x.fans + ' · 播 ' + x.views + '</span></div>';
+    }).join("");
+  }
+  render();
+  document.getElementById("stat-add").addEventListener("click", function () {
+    var f = parseInt(fansIn.value, 10), v = parseInt(viewsIn.value, 10);
+    if (isNaN(f) || isNaN(v)) { fansIn.focus(); return; }
+    var arr = load(), t = today();
+    var ex = arr.filter(function (x) { return x.date === t; })[0];
+    if (ex) { ex.fans = f; ex.views = v; } else { arr.push({ date: t, fans: f, views: v }); }
+    save(arr); render(); fansIn.value = ""; viewsIn.value = "";
+  });
+})();
+
+(function () {
+  // 自媒体 · 已发布作品（记录 + 列表 + 删除）
+  var KEY = "lwp_media_posts";
+  var dateIn = document.getElementById("post-date");
+  var titleIn = document.getElementById("post-title");
+  var playsIn = document.getElementById("post-plays");
+  var likesIn = document.getElementById("post-likes");
+  var fansIn = document.getElementById("post-fans");
+  var list = document.getElementById("post-list");
+  if (!titleIn || !list) return;
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
+  function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  dateIn.value = today();
+  function render() {
+    var arr = load();
+    if (arr.length === 0) { list.innerHTML = '<div class="media-hint">还没有记录，发完第一条视频就来记一下吧</div>'; return; }
+    list.innerHTML = arr.slice().reverse().map(function (p) {
+      return '<div class="post-item"><div class="post-top"><span class="post-title">' + p.title + '</span>'
+        + '<span class="post-del" data-i="' + p.id + '" title="删除">✕</span></div>'
+        + '<div class="post-meta">' + p.date + (p.platform ? " · " + p.platform : "") + '</div>'
+        + '<div class="post-metrics"><div>播放<b>' + p.plays + '</b></div><div>赞<b>' + p.likes + '</b></div><div>涨粉<b>' + p.fans + '</b></div></div></div>';
+    }).join("");
+  }
+  render();
+  document.getElementById("post-add").addEventListener("click", function () {
+    var title = titleIn.value.trim();
+    if (!title) { titleIn.focus(); return; }
+    var arr = load();
+    arr.push({
+      id: Date.now(), date: dateIn.value, title: title, platform: "抖音",
+      plays: parseInt(playsIn.value, 10) || 0, likes: parseInt(likesIn.value, 10) || 0, fans: parseInt(fansIn.value, 10) || 0
+    });
+    save(arr); render(); titleIn.value = ""; playsIn.value = ""; likesIn.value = ""; fansIn.value = "";
+  });
+  list.addEventListener("click", function (e) {
+    var del = e.target.closest(".post-del");
+    if (del) {
+      var id = parseInt(del.getAttribute("data-i"), 10);
+      save(load().filter(function (p) { return p.id !== id; }));
+      render();
+    }
+  });
 })();
 </script>
 </body>
