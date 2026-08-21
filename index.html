@@ -173,6 +173,23 @@
   .c-card .hint { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
   .c-card.open .hint { display: none; }
 
+  /* 自媒体模块 */
+  .media-persona { background: var(--bg); border-radius: var(--radius-sm); padding: 14px; }
+  .mp-role { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .mp-summary { font-size: 13px; color: var(--ink-2); margin-top: 8px; line-height: 1.8; white-space: pre-line; }
+  .mp-rules { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .mp-rule-title { font-size: 12px; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; }
+  .mp-rules ul { list-style: none; }
+  .mp-rules li { font-size: 12.5px; color: #374151; padding: 3px 0 3px 18px; position: relative; line-height: 1.6; }
+  .mp-rules li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+  .media-dirs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .media-dir { background: var(--bg); border-radius: var(--radius-sm); padding: 12px; }
+  .md-ico { font-size: 20px; }
+  .md-tag { font-size: 13.5px; font-weight: 700; margin-top: 4px; }
+  .md-desc { font-size: 12px; color: var(--ink-2); margin-top: 4px; line-height: 1.6; }
+  .c-card-icon.media { background: var(--purple-soft); }
+  #media-footer { font-size: 11px; color: var(--ink-3); text-align: center; margin-top: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+
   .timeline-item { padding: 10px 0; border-bottom: 1px dashed var(--line); }
   .timeline-item:last-child { border-bottom: none; }
   .timeline-item .t-date { font-size: 11px; color: var(--ink-3); }
@@ -574,12 +591,40 @@
     </div>
 
     <div class="panel" id="panel-media">
-      <div class="empty-panel">
-        <div class="empty-ico">🎬</div>
-        <div class="empty-title">自媒体板块</div>
-        <div class="empty-desc">这里将放自媒体运营、涨粉、选题、变现等内容</div>
-        <div class="empty-tag">内容建设中 · 敬请期待</div>
+      <div class="greeting">
+        <div class="greeting-text">自媒体板块 · <b>电商财务视角，只展示真实</b></div>
+        <div class="greeting-pill">抖音</div>
       </div>
+
+      <div class="disclaimer">
+        <b>说明</b><span>本模块是梁婉屏个人抖音副业的内容沉淀（选题库+口播脚本），只做真实记录、不教人搞钱，与理财板块无关，不构成任何投资建议。</span>
+      </div>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--blue-soft)">🎬</span>我是谁 · 人设</div>
+          <div class="sec-meta">真实不装</div>
+        </div>
+        <div id="media-persona"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--purple-soft)">🧭</span>选题方向</div>
+          <div class="sec-meta">4条线</div>
+        </div>
+        <div class="media-dirs" id="media-dirs"></div>
+      </section>
+
+      <section class="section">
+        <div class="sec-head">
+          <div class="sec-title"><span class="ico" style="background:var(--amber-soft)">🎤</span>今日可拍脚本</div>
+          <div class="sec-meta" id="media-script-count"></div>
+        </div>
+        <div id="media-scripts"></div>
+      </section>
+
+      <footer id="media-footer"></footer>
     </div>
   </div>
 </main>
@@ -590,6 +635,7 @@
   <script src="valuation.js"></script>
   <script src="sectors.js"></script>
   <script src="analysis.js"></script>
+  <script src="media.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
@@ -1060,6 +1106,48 @@ document.querySelectorAll(".nav-item").forEach(function (btn) {
 document.getElementById("fab").addEventListener("click", function () {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+(function () {
+  var M = window.MEDIA;
+  if (!M) return;
+  var p = M.persona;
+  if (p) {
+    var rules = (p.rules || []).map(function (r) { return '<li>' + r + '</li>'; }).join('');
+    document.getElementById('media-persona').innerHTML =
+      '<div class="mp-role">' + p.role + '</div>'
+      + '<div class="mp-summary">' + p.summary + '</div>'
+      + '<div class="mp-rules"><div class="mp-rule-title">四条原则</div><ul>' + rules + '</ul></div>';
+  }
+  var dirs = document.getElementById('media-dirs');
+  (M.directions || []).forEach(function (d) {
+    var el = document.createElement('div');
+    el.className = 'media-dir';
+    el.innerHTML = '<div class="md-ico">' + d.ico + '</div>'
+      + '<div class="md-tag">' + d.tag + '</div>'
+      + '<div class="md-desc">' + d.desc + '</div>';
+    dirs.appendChild(el);
+  });
+  var box = document.getElementById('media-scripts');
+  var cnt = document.getElementById('media-script-count');
+  if (cnt) cnt.textContent = (M.scripts || []).length + ' 个';
+  (M.scripts || []).forEach(function (s) {
+    var div = document.createElement('div');
+    div.className = 'c-card';
+    div.innerHTML =
+      '<div class="c-card-head">'
+      + '<div class="c-card-icon media">🎤</div>'
+      + '<div>'
+      + '<div class="c-card-title">' + s.title + '</div>'
+      + '<div class="c-card-summary">' + s.hook + '</div>'
+      + '</div></div>'
+      + '<div class="c-card-detail">【角度】' + s.angle + '\n\n' + s.body + '\n\n【拍摄提示】' + s.shoot + '\n【建议时长】' + s.len + '</div>'
+      + '<div class="hint">点击展开口播全文 ↓</div>';
+    div.addEventListener('click', function () { div.classList.toggle('open'); });
+    box.appendChild(div);
+  });
+  var f = document.getElementById('media-footer');
+  if (f) f.innerHTML = '自媒体模块 · 内容更新于 ' + (M.lastUpdated || '') + ' · 只做真实记录，不教人搞钱';
+})();
 </script>
 </body>
 </html>
