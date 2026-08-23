@@ -1268,21 +1268,38 @@ document.getElementById("fab").addEventListener("click", function () {
   });
   var box = document.getElementById('media-scripts');
   var cnt = document.getElementById('media-script-count');
-  if (cnt) cnt.textContent = (M.scripts || []).length + ' 个';
-  (M.scripts || []).forEach(function (s) {
-    var div = document.createElement('div');
-    div.className = 'c-card';
-    div.innerHTML =
+  var scripts = M.scripts || [];
+  if (cnt) cnt.textContent = '3 个方向 · ' + scripts.length + ' 条';
+  var groups = {};
+  scripts.forEach(function (s) {
+    var k = s.angle || '其他';
+    (groups[k] = groups[k] || []).push(s);
+  });
+  Object.keys(groups).forEach(function (ang) {
+    var card = document.createElement('div');
+    card.className = 'c-card';
+    var inner = groups[ang].map(function (s) {
+      return '<div class="c-card sc-card">'
+        + '<div class="c-card-head">'
+        + '<div class="c-card-icon media">🎤</div>'
+        + '<div><div class="c-card-title">' + s.title + '</div>'
+        + '<div class="c-card-summary">' + s.hook + '</div></div></div>'
+        + '<div class="c-card-detail">【角度】' + s.angle + '\n\n' + s.body + '\n\n【拍摄提示】' + s.shoot + '\n【建议时长】' + s.len + '</div>'
+        + '<div class="hint">点击展开口播全文 ↓</div>'
+        + '</div>';
+    }).join('');
+    card.innerHTML =
       '<div class="c-card-head">'
       + '<div class="c-card-icon media">🎤</div>'
-      + '<div>'
-      + '<div class="c-card-title">' + s.title + '</div>'
-      + '<div class="c-card-summary">' + s.hook + '</div>'
-      + '</div></div>'
-      + '<div class="c-card-detail">【角度】' + s.angle + '\n\n' + s.body + '\n\n【拍摄提示】' + s.shoot + '\n【建议时长】' + s.len + '</div>'
-      + '<div class="hint">点击展开口播全文 ↓</div>';
-    div.addEventListener('click', function () { div.classList.toggle('open'); });
-    box.appendChild(div);
+      + '<div><div class="c-card-title">' + ang + '</div>'
+      + '<div class="c-card-summary">点开看 ' + groups[ang].length + ' 条脚本 ↓</div></div></div>'
+      + '<div class="c-card-detail">' + inner + '</div>'
+      + '<div class="hint">点击展开脚本 ↓</div>';
+    card.addEventListener('click', function () { card.classList.toggle('open'); });
+    Array.prototype.forEach.call(card.querySelectorAll('.sc-card'), function (sc) {
+      sc.addEventListener('click', function (e) { e.stopPropagation(); sc.classList.toggle('open'); });
+    });
+    box.appendChild(card);
   });
   var f = document.getElementById('media-footer');
   if (f) f.innerHTML = '自媒体模块 · 内容更新于 ' + (M.lastUpdated || '') + ' · 只做真实记录，奔变现守底线';
