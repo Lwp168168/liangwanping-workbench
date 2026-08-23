@@ -158,5 +158,6 @@ window.MEDIA = {
         ]
       }
     ]
-  }
+  },
+  reviews: []
 };

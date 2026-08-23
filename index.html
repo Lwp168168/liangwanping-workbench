@@ -352,6 +352,11 @@
   .post-link { font-weight: 700; font-size: 13px; color: var(--brand); word-break: break-all; text-decoration: none; }
   .post-link:hover { text-decoration: underline; }
   .post-review { font-size: 12.5px; color: var(--ink-2); line-height: 1.7; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); white-space: pre-line; }
+  .post-badge { display:inline-block; margin-left:8px; padding:1px 7px; font-size:10px; font-weight:700; color:#fff; background:#7c5cff; border-radius:10px; vertical-align:middle; }
+  .btn-ai { background:#7c5cff; color:#fff; border:none; font-weight:700; }
+  .btn-ai:hover { background:#6a4af0; }
+  .post-toast { display:none; margin:6px 0 2px; padding:8px 10px; background:var(--green-soft); color:var(--ink); border-radius:var(--radius-sm); font-size:12px; }
+  .post-toast.show { display:block; }
   .media-hint { font-size: 11px; color: var(--ink-3); line-height: 1.6; margin-top: 8px; }
 
   footer { text-align: center; color: var(--ink-3); font-size: 11px; margin-top: 24px; }
@@ -763,9 +768,11 @@
         <textarea class="mini-input" id="post-review" placeholder="复盘意见：把凉丸瓶（我）给你的复盘结论粘到这里存档" style="width:100%;min-height:54px;margin-bottom:10px;resize:vertical"></textarea>
         <div class="post-form" style="margin-bottom:4px">
           <button class="mini-btn" id="post-add">保存复盘</button>
+          <button class="mini-btn btn-ai" id="post-to-ai">📨 丢给凉丸瓶AI复盘</button>
         </div>
+        <div class="post-toast" id="post-toast"></div>
         <div id="post-list"></div>
-        <div class="media-hint">把作品链接发到对话里，我帮你复盘、提改进意见；结论粘到这里存档。数据只存在你本机浏览器。</div>
+        <div class="media-hint">①填链接+数据 → 点「📨 丢给凉丸瓶AI复盘」复制模板 → 粘到凉丸瓶AI对话发我；②我分析完会把复盘写回这里（标「AI复盘」）；③也可手动填结论点「保存复盘」存本机。本机数据只你可见。</div>
       </section>
 
       <footer id="media-footer"></footer>
@@ -1517,7 +1524,7 @@ document.getElementById("fab").addEventListener("click", function () {
 })();
 
 (function () {
-  // 自媒体 · 复盘（作品链接 + 数据 + 复盘意见，localStorage）
+  // 自媒体 · 复盘（作品链接 + 数据 + 复盘意见；localStorage 手动存档 + media.js 中 AI 写回的复盘）
   var KEY = "lwp_media_reviews";
   var linkIn = document.getElementById("post-link");
   var dateIn = document.getElementById("post-date");
@@ -1526,26 +1533,43 @@ document.getElementById("fab").addEventListener("click", function () {
   var commentsIn = document.getElementById("post-comments");
   var reviewIn = document.getElementById("post-review");
   var list = document.getElementById("post-list");
+  var toast = document.getElementById("post-toast");
   if (!linkIn || !list) return;
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
   function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
   dateIn.value = today();
   function esc(s) { return (s || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function showToast(t) { if (!toast) return; toast.textContent = t; toast.classList.add("show"); setTimeout(function () { toast.classList.remove("show"); }, 3500); }
+  function fallbackCopy(t) {
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+  function copyText(t) {
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).catch(function () { fallbackCopy(t); }); }
+    else { fallbackCopy(t); }
+  }
   function render() {
-    var arr = load();
-    if (arr.length === 0) { list.innerHTML = '<div class="media-hint">还没有复盘记录，把作品链接发给我，我帮你复盘</div>'; return; }
-    list.innerHTML = arr.slice().reverse().map(function (p) {
+    var local = load();
+    var ai = (window.MEDIA && window.MEDIA.reviews) ? window.MEDIA.reviews : [];
+    var items = ai.slice().reverse().concat(local.slice().reverse());
+    if (items.length === 0) { list.innerHTML = '<div class="media-hint">还没有复盘记录，把作品链接发给我，我帮你复盘</div>'; return; }
+    list.innerHTML = items.map(function (p) {
       var link = esc(p.link || "");
       var disp = link.length > 40 ? link.slice(0, 40) + "…" : link;
       var m = [];
       if (p.plays) m.push("播放<b>" + p.plays + "</b>");
       if (p.likes) m.push("赞<b>" + p.likes + "</b>");
       if (p.comments) m.push("评论<b>" + p.comments + "</b>");
+      var badge = p.byAI ? '<span class="post-badge">AI复盘</span>' : "";
+      var del = (typeof p.id === "number") ? '<span class="post-del" data-i="' + p.id + '" title="删除">✕</span>' : "";
       return '<div class="post-item">'
         + '<div class="post-top"><a class="post-link" href="' + link + '" target="_blank" rel="noopener">' + (disp || "作品") + "</a>"
-        + '<span class="post-del" data-i="' + p.id + '" title="删除">✕</span></div>'
-        + '<div class="post-meta">' + p.date + "</div>"
+        + badge + del + "</div>"
+        + '<div class="post-meta">' + (p.date || "") + "</div>"
         + (m.length ? '<div class="post-metrics">' + m.map(function (x) { return "<div>" + x + "</div>"; }).join("") + "</div>" : "")
         + (p.review ? '<div class="post-review">' + esc(p.review).replace(/\n/g, "<br>") + "</div>" : "");
     }).join("");
@@ -1563,6 +1587,18 @@ document.getElementById("fab").addEventListener("click", function () {
     save(arr); render();
     linkIn.value = ""; playsIn.value = ""; likesIn.value = ""; commentsIn.value = ""; reviewIn.value = "";
   });
+  var toAi = document.getElementById("post-to-ai");
+  if (toAi) {
+    toAi.addEventListener("click", function () {
+      var link = linkIn.value.trim();
+      if (!link) { linkIn.focus(); showToast("先粘贴作品链接再发我"); return; }
+      var msg = "【复盘这条抖音作品】\n链接：" + link
+        + "\n数据：播放 " + (playsIn.value || "?") + " · 赞 " + (likesIn.value || "?") + " · 评论 " + (commentsIn.value || "?") + " · 发布 " + (dateIn.value || "?")
+        + "\n（附后台截图：完播率/流量来源更佳）\n请按复盘模板给诊断+改进意见，分析完把复盘结论写回工作台。";
+      copyText(msg);
+      showToast("已复制复盘模板，粘到凉丸瓶AI对话发我即可");
+    });
+  }
   list.addEventListener("click", function (e) {
     var del = e.target.closest(".post-del");
     if (del) {
