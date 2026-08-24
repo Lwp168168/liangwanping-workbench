@@ -772,7 +772,7 @@
         </div>
         <div class="post-toast" id="post-toast"></div>
         <div id="post-list"></div>
-        <div class="media-hint">①填链接+数据 → 点「📨 丢给凉丸瓶AI复盘」复制模板 → 粘到凉丸瓶AI对话发我；②我分析完会把复盘写回这里（标「AI复盘」）；③也可手动填结论点「保存复盘」存本机。本机数据只你可见。</div>
+        <div class="media-hint">①填链接+数据 → 点「📨 丢给凉丸瓶AI复盘」自动复制并试着唤起 WorkBuddy → 在对话里 Ctrl+V 发送；②我分析完把复盘结论写回这里（标「AI复盘」）；③也可手动填结论点「保存复盘」存本机。本机数据只你可见。（工作台是静态页、无后端，无法直接调起AI，故需这步「粘一下」）</div>
       </section>
 
       <footer id="media-footer"></footer>
@@ -1596,7 +1596,9 @@ document.getElementById("fab").addEventListener("click", function () {
         + "\n数据：播放 " + (playsIn.value || "?") + " · 赞 " + (likesIn.value || "?") + " · 评论 " + (commentsIn.value || "?") + " · 发布 " + (dateIn.value || "?")
         + "\n（附后台截图：完播率/流量来源更佳）\n请按复盘模板给诊断+改进意见，分析完把复盘结论写回工作台。";
       copyText(msg);
-      showToast("已复制复盘模板，粘到凉丸瓶AI对话发我即可");
+      // 最佳努力：尝试唤起 WorkBuddy 窗口（无官方深链，未注册则静默失败，复制仍生效）
+      try { var w = window.open("workbuddy://conversation", "_blank", "noopener"); } catch (e) {}
+      showToast("已复制复盘模板 ✅ 去 WorkBuddy 对话 Ctrl+V 发送（已试着唤起窗口）");
     });
   }
   list.addEventListener("click", function (e) {
