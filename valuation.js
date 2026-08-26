@@ -1,75 +1,75 @@
 // 指数估值体检（由 fetch_val.py 自动生成，勿手改）
 window.VALUATION = {
-  "updated": "2026-08-25 08:21",
+  "updated": "2026-08-26 09:59",
   "items": [
     {
       "name": "沪深300",
-      "pe": 14.04,
-      "pePct": 76.2,
-      "pbPct": 45.8,
+      "pe": 14.01,
+      "pePct": 75.4,
+      "pbPct": 45.3,
       "roe": 10.3,
       "yield": 2.59,
       "eva": "high",
-      "pos52": 32.0
+      "pos52": 33.3
     },
     {
       "name": "中证500",
-      "pe": 34.74,
-      "pePct": 84.4,
-      "pbPct": 77.8,
-      "roe": 7.0,
-      "yield": 1.34,
+      "pe": 34.1,
+      "pePct": 81.7,
+      "pbPct": 77.6,
+      "roe": 7.1,
+      "yield": 1.35,
       "eva": "high",
-      "pos52": 43.7
+      "pos52": 45.2
     },
     {
       "name": "上证50",
       "pe": 11.28,
-      "pePct": 72.7,
-      "pbPct": 54.7,
+      "pePct": 72.6,
+      "pbPct": 55.2,
       "roe": 11.0,
       "yield": 3.21,
       "eva": "high",
-      "pos52": 22.9
+      "pos52": 27.4
     },
     {
       "name": "中证1000",
-      "pe": 43.27,
-      "pePct": 68.3,
-      "pbPct": 45.2,
+      "pe": 43.51,
+      "pePct": 68.6,
+      "pbPct": 45.4,
       "roe": 5.5,
       "yield": 1.09,
       "eva": "high",
-      "pos52": 34.1
+      "pos52": 36.5
     },
     {
       "name": "红利低波",
       "pe": 8.49,
-      "pePct": 78.9,
-      "pbPct": 61.8,
+      "pePct": 79.0,
+      "pbPct": 62.0,
       "roe": 10.3,
       "yield": 4.32,
       "eva": "high"
     },
     {
       "name": "上证红利",
-      "pe": 9.01,
-      "pePct": 97.9,
+      "pe": 9.0,
+      "pePct": 97.8,
       "pbPct": 62.7,
       "roe": 9.6,
-      "yield": 4.06,
+      "yield": 4.07,
       "eva": "high",
-      "pos52": 90.5
+      "pos52": 87.2
     },
     {
       "name": "科创50",
-      "pe": 160.72,
-      "pePct": 89.0,
-      "pbPct": 84.7,
-      "roe": 4.6,
+      "pe": 144.65,
+      "pePct": 84.0,
+      "pbPct": 83.9,
+      "roe": 5.1,
       "yield": 0.25,
       "eva": "high",
-      "pos52": 37.5
+      "pos52": 38.6
     }
   ]
 };
