@@ -1,75 +1,75 @@
 // 指数估值体检（由 fetch_val.py 自动生成，勿手改）
 window.VALUATION = {
-  "updated": "2026-09-01 09:30",
+  "updated": "2026-09-02 08:22",
   "items": [
     {
       "name": "沪深300",
-      "pe": 13.77,
-      "pePct": 71.8,
-      "pbPct": 46.7,
+      "pe": 13.78,
+      "pePct": 72.1,
+      "pbPct": 47.2,
       "roe": 10.5,
       "yield": 2.55,
       "eva": "high",
-      "pos52": 40.4
+      "pos52": 38.5
     },
     {
       "name": "中证500",
-      "pe": 33.98,
-      "pePct": 81.1,
-      "pbPct": 78.9,
+      "pe": 33.59,
+      "pePct": 79.3,
+      "pbPct": 78.0,
       "roe": 7.2,
-      "yield": 1.3,
+      "yield": 1.32,
       "eva": "high",
-      "pos52": 52.9
+      "pos52": 49.2
     },
     {
       "name": "上证50",
-      "pe": 10.93,
-      "pePct": 65.0,
-      "pbPct": 58.3,
+      "pe": 11.01,
+      "pePct": 66.8,
+      "pbPct": 61.2,
       "roe": 11.4,
-      "yield": 3.12,
+      "yield": 3.1,
       "eva": "high",
-      "pos52": 39.5
+      "pos52": 40.7
     },
     {
       "name": "中证1000",
-      "pe": 44.49,
-      "pePct": 69.5,
-      "pbPct": 50.1,
+      "pe": 44.05,
+      "pePct": 69.2,
+      "pbPct": 48.0,
       "roe": 5.5,
-      "yield": 1.05,
+      "yield": 1.07,
       "eva": "high",
-      "pos52": 46.4
+      "pos52": 42.9
     },
     {
       "name": "红利低波",
-      "pe": 8.54,
-      "pePct": 79.5,
-      "pbPct": 62.2,
+      "pe": 8.64,
+      "pePct": 80.2,
+      "pbPct": 63.6,
       "roe": 10.2,
-      "yield": 4.24,
+      "yield": 4.19,
       "eva": "high"
     },
     {
       "name": "上证红利",
-      "pe": 9.0,
-      "pePct": 97.8,
-      "pbPct": 63.2,
+      "pe": 9.08,
+      "pePct": 98.3,
+      "pbPct": 64.1,
       "roe": 9.7,
-      "yield": 3.98,
+      "yield": 3.95,
       "eva": "high",
-      "pos52": 99.7
+      "pos52": 91.6
     },
     {
       "name": "科创50",
-      "pe": 145.88,
-      "pePct": 84.0,
-      "pbPct": 93.4,
+      "pe": 142.94,
+      "pePct": 83.3,
+      "pbPct": 91.1,
       "roe": 5.4,
       "yield": 0.26,
       "eva": "high",
-      "pos52": 45.3
+      "pos52": 41.8
     }
   ]
 };
