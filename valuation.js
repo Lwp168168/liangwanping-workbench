@@ -1,6 +1,6 @@
 // 指数估值体检（由 fetch_val.py 自动生成，勿手改）
 window.VALUATION = {
-  "updated": "2026-10-07 08:22",
+  "updated": "2026-10-08 09:47",
   "items": [
     {
       "name": "沪深300",
@@ -10,7 +10,7 @@ window.VALUATION = {
       "roe": 10.6,
       "yield": 2.75,
       "eva": "high",
-      "pos52": 4.6
+      "pos52": 3.8
     },
     {
       "name": "中证500",
@@ -20,7 +20,7 @@ window.VALUATION = {
       "roe": 7.2,
       "yield": 1.41,
       "eva": "high",
-      "pos52": 27.1
+      "pos52": 26.7
     },
     {
       "name": "上证50",
@@ -40,7 +40,7 @@ window.VALUATION = {
       "roe": 5.5,
       "yield": 1.13,
       "eva": "high",
-      "pos52": 25.7
+      "pos52": 27.0
     },
     {
       "name": "红利低波",
@@ -59,7 +59,7 @@ window.VALUATION = {
       "roe": 9.7,
       "yield": 4.05,
       "eva": "high",
-      "pos52": 71.0
+      "pos52": 74.0
     },
     {
       "name": "科创50",
@@ -69,7 +69,7 @@ window.VALUATION = {
       "roe": 5.8,
       "yield": 0.25,
       "eva": "high",
-      "pos52": 27.9
+      "pos52": 25.7
     }
   ]
 };
