@@ -1,75 +1,75 @@
 // 指数估值体检（由 fetch_val.py 自动生成，勿手改）
 window.VALUATION = {
-  "updated": "2026-11-06 09:15",
+  "updated": "2026-11-07 09:20",
   "items": [
     {
       "name": "沪深300",
-      "pe": 13.54,
-      "pePct": 68.4,
-      "pbPct": 22.2,
+      "pe": 13.48,
+      "pePct": 66.8,
+      "pbPct": 20.2,
       "roe": 9.9,
-      "yield": 3.0,
+      "yield": 3.03,
       "eva": "mid",
-      "pos52": 14.0
+      "pos52": 8.7
     },
     {
       "name": "中证500",
-      "pe": 28.63,
-      "pePct": 64.0,
-      "pbPct": 62.6,
+      "pe": 27.97,
+      "pePct": 60.7,
+      "pbPct": 59.6,
       "roe": 7.3,
-      "yield": 1.58,
+      "yield": 1.61,
       "eva": "high",
-      "pos52": 16.8
+      "pos52": 11.9
     },
     {
       "name": "上证50",
-      "pe": 11.64,
-      "pePct": 82.9,
-      "pbPct": 44.7,
+      "pe": 11.65,
+      "pePct": 83.0,
+      "pbPct": 45.1,
       "roe": 10.5,
       "yield": 3.62,
       "eva": "high",
-      "pos52": 26.8
+      "pos52": 22.1
     },
     {
       "name": "中证1000",
-      "pe": 39.57,
-      "pePct": 57.8,
-      "pbPct": 18.0,
+      "pe": 38.75,
+      "pePct": 53.1,
+      "pbPct": 14.6,
       "roe": 5.2,
-      "yield": 1.23,
+      "yield": 1.26,
       "eva": "mid",
-      "pos52": 18.0
+      "pos52": 12.9
     },
     {
       "name": "红利低波",
-      "pe": 8.89,
-      "pePct": 79.8,
-      "pbPct": 65.2,
+      "pe": 9.01,
+      "pePct": 80.0,
+      "pbPct": 66.0,
       "roe": 10.0,
-      "yield": 4.7,
+      "yield": 4.65,
       "eva": "high"
     },
     {
       "name": "上证红利",
-      "pe": 8.99,
-      "pePct": 96.7,
-      "pbPct": 65.7,
+      "pe": 9.1,
+      "pePct": 97.7,
+      "pbPct": 66.0,
       "roe": 9.8,
-      "yield": 4.66,
+      "yield": 4.61,
       "eva": "high",
-      "pos52": 66.8
+      "pos52": 70.0
     },
     {
       "name": "科创50",
-      "pe": 96.04,
-      "pePct": 75.6,
-      "pbPct": 60.9,
-      "roe": 6.4,
+      "pe": 92.75,
+      "pePct": 74.9,
+      "pbPct": 59.3,
+      "roe": 6.6,
       "yield": 0.29,
       "eva": "high",
-      "pos52": 13.7
+      "pos52": 10.8
     }
   ]
 };
